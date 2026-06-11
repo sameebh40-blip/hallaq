@@ -30,6 +30,7 @@ function serviceUnavailable() {
 
 const publicPaths = [
   withBasePath("/auth"),
+  withBasePath("/shop-login"),
   withBasePath("/locale"),
   withBasePath("/_next"),
   withBasePath("/favicon.ico"),
@@ -69,7 +70,7 @@ export async function middleware(request: NextRequest) {
 
   if (!user) {
     const next = `${request.nextUrl.pathname}${request.nextUrl.search}`;
-    return NextResponse.redirect(withNext(new URL(withBasePath("/auth/sign-in"), request.url), next));
+    return NextResponse.redirect(withNext(new URL(withBasePath("/shop-login"), request.url), next));
   }
 
   const { data: profile } = await activeSupabase

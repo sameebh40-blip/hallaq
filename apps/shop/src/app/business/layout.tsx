@@ -21,7 +21,7 @@ export default async function BusinessLayout({ children }: { children: ReactNode
   const supabase = await createAppSupabaseServerClient();
   const profile = await getMyProfile(supabase);
 
-  if (!profile) redirect("/auth/sign-in");
+  if (!profile) redirect("/shop-login");
 
   if (profile.role === "barber") redirect("/barber-dashboard");
   if (profile.role === "customer") redirect("/home");

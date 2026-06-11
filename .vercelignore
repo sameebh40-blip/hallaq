@@ -1,10 +1,19 @@
 **/node_modules
+**/node_modules/**
 **/.next
+**/.next/**
 **/.next-build
+**/.next-build/**
 **/.turbo
 **/.vercel/cache
+.vercel/**
+.git/**
+.supabase_home/**
+supabase/.temp/**
 
 android/**/build
+android/.gradle/**
+android/**/.gradle/**
 build/**
 tools/ffmpeg/**
 

@@ -4,8 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@hallaq/ui/cn";
-import { HallaqGoldLogo } from "@hallaq/ui/hallaq-logo";
-import { Button } from "@hallaq/ui/button";
 import { BadgeCheck, ChevronsLeft, ChevronsRight, LogOut, Plus, Upload } from "lucide-react";
 
 import type { BusinessNavItem } from "./nav";
@@ -26,29 +24,29 @@ export function BusinessSidebar({
   return (
     <aside
       className={cn(
-        "relative flex h-dvh flex-col border-r border-border bg-background/60 backdrop-blur-xl",
-        collapsed ? "w-[84px]" : "w-[288px]"
+        "relative flex h-dvh shrink-0 flex-col border-r border-white/10 bg-[linear-gradient(180deg,rgba(15,15,15,0.98),rgba(5,5,5,0.98))] shadow-[28px_0_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl",
+        collapsed ? "w-[92px]" : "w-[308px]"
       )}
     >
-      <div className={cn("flex items-center gap-3 px-4 py-4", collapsed ? "justify-center" : "")}>
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-soft">
-          <HallaqGoldLogo className="h-6 w-6" />
+      <div className={cn("flex items-center gap-3 border-b border-white/10 px-5 py-5", collapsed ? "justify-center px-3" : "")}>
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[hsl(var(--gold)/0.3)] bg-[linear-gradient(180deg,rgba(255,214,77,0.28),rgba(255,214,77,0.06))] shadow-[0_18px_40px_rgba(0,0,0,0.28)]">
+          <span className="text-lg font-semibold text-primary">H</span>
         </div>
         {collapsed ? null : (
           <div className="flex min-w-0 flex-col">
-            <div className="flex items-center gap-2 truncate text-sm font-semibold tracking-tight">
+            <div className="flex items-center gap-2 truncate text-sm font-semibold tracking-tight text-white">
               <span className="truncate">{shop.name}</span>
               {shop.isVerified ? <BadgeCheck className="h-4 w-4 text-primary" /> : null}
             </div>
-            <div className="truncate text-xs text-muted-foreground">{shop.area ?? "Bahrain"}</div>
+            <div className="truncate text-[11px] uppercase tracking-[0.22em] text-white/45">{shop.area ?? "Bahrain"}</div>
           </div>
         )}
         <button
           type="button"
           onClick={onToggleCollapsed}
           className={cn(
-            "absolute top-4 rounded-md border border-white/10 bg-white/5 p-2 text-muted-foreground transition hover:bg-white/10 hover:text-foreground",
-            collapsed ? "right-3" : "right-4"
+            "absolute top-5 rounded-xl border border-white/10 bg-white/[0.05] p-2 text-white/55 transition hover:bg-white/10 hover:text-white",
+            collapsed ? "right-3" : "right-5"
           )}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
@@ -56,24 +54,35 @@ export function BusinessSidebar({
         </button>
       </div>
 
-      <div className={cn("px-4 pb-3", collapsed ? "px-3" : "")}>
+      <div className={cn("px-5 pb-4 pt-4", collapsed ? "px-3" : "")}>
         <div className={cn("grid gap-2", collapsed ? "grid-cols-1" : "grid-cols-2")}>
-          <Button asChild variant="secondary" size="sm" className={collapsed ? "justify-center" : ""}>
-            <Link href="/business/bookings/new">
-              <Plus className={cn("h-4 w-4", collapsed ? "" : "mr-2")} />
-              {collapsed ? null : "New Booking"}
-            </Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm" className={collapsed ? "justify-center" : ""}>
-            <Link href="/business/reels/upload">
-              <Upload className={cn("h-4 w-4", collapsed ? "" : "mr-2")} />
-              {collapsed ? null : "Upload Reel"}
-            </Link>
-          </Button>
+          <Link
+            href="/business/bookings/new"
+            className={cn(
+              "inline-flex h-10 items-center justify-center rounded-xl border border-[hsl(var(--gold)/0.18)] bg-[linear-gradient(180deg,hsl(var(--gold)),hsl(var(--gold)/0.8))] px-3 text-sm font-semibold text-black shadow-[0_14px_30px_rgba(215,170,40,0.24)] transition hover:opacity-95",
+              collapsed ? "justify-center" : ""
+            )}
+          >
+            <Plus className={cn("h-4 w-4", collapsed ? "" : "mr-2")} />
+            {collapsed ? null : "New Booking"}
+          </Link>
+          <Link
+            href="/business/reels/upload"
+            className={cn(
+              "inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-3 text-sm font-medium text-white transition hover:bg-white/[0.09]",
+              collapsed ? "justify-center" : ""
+            )}
+          >
+            <Upload className={cn("h-4 w-4", collapsed ? "" : "mr-2")} />
+            {collapsed ? null : "Upload Reel"}
+          </Link>
         </div>
       </div>
 
-      <nav className={cn("flex-1 overflow-y-auto px-2 pb-6", collapsed ? "px-2" : "px-3")}>
+      <nav className={cn("flex-1 overflow-y-auto px-3 pb-6", collapsed ? "px-2" : "px-4")}>
+        {collapsed ? null : (
+          <div className="px-2 pb-3 text-[11px] uppercase tracking-[0.26em] text-white/32">Workspace</div>
+        )}
         <div className="grid gap-1">
           {nav
             .filter((i) => i.key !== "logout")
@@ -85,14 +94,14 @@ export function BusinessSidebar({
                   key={item.key}
                   href={item.href}
                   className={cn(
-                    "group flex items-center gap-3 rounded-xl border border-transparent px-3 py-2 text-sm text-muted-foreground transition",
+                    "group flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm transition",
                     active
-                      ? "border-white/10 bg-white/10 text-foreground shadow-soft"
-                      : "hover:border-white/10 hover:bg-white/5 hover:text-foreground"
+                      ? "border-[hsl(var(--gold)/0.2)] bg-[linear-gradient(90deg,rgba(255,214,77,0.14),rgba(255,214,77,0.04))] text-white shadow-[0_18px_40px_rgba(0,0,0,0.22)]"
+                      : "border-transparent text-white/55 hover:border-white/10 hover:bg-white/[0.05] hover:text-white"
                   )}
                 >
                   {Icon ? (
-                    <Icon className={cn("h-4 w-4 text-muted-foreground transition", active ? "text-primary" : "group-hover:text-foreground")} />
+                    <Icon className={cn("h-4 w-4 transition", active ? "text-primary" : "text-white/45 group-hover:text-white")} />
                   ) : null}
                   {collapsed ? null : <span className="truncate">{item.label}</span>}
                 </Link>
@@ -101,12 +110,12 @@ export function BusinessSidebar({
         </div>
       </nav>
 
-      <div className={cn("border-t border-border p-3", collapsed ? "px-2" : "px-3")}>
+      <div className={cn("border-t border-white/10 p-4", collapsed ? "px-2" : "px-4")}>
         <form action="/auth/sign-out" method="post">
           <button
             type="submit"
             className={cn(
-              "flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-muted-foreground transition hover:bg-white/10 hover:text-foreground",
+              "flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 text-sm text-white/60 transition hover:bg-white/[0.08] hover:text-white",
               collapsed ? "justify-center" : ""
             )}
           >

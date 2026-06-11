@@ -2,7 +2,9 @@ import Link from "next/link";
 
 import { LuxuryCard } from "@hallaq/ui/luxury-card";
 import { getMyProfile } from "@hallaq/supabase/profile";
+import { ArrowRight, BadgeCheck, CalendarDays, Crown, Package, Scissors, Sparkles, Star, Users } from "lucide-react";
 
+import { BusinessPageHeader } from "@/components/business/page-header";
 import { createAppSupabaseServerClient } from "@/lib/supabase";
 import { getMyShopContext } from "@/lib/my-shop-context";
 
@@ -66,40 +68,126 @@ export default async function BusinessDashboardPage({
 
     return (
       <div className="grid gap-6">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <div className="text-xl font-semibold tracking-tight">Dashboard</div>
-            <div className="text-sm text-muted-foreground">Select a shop to open the business dashboard.</div>
-          </div>
+        <BusinessPageHeader
+          title="Executive Dashboard"
+          subtitle="Select a shop to enter its premium business workspace."
+          actions={
+            <div className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--gold)/0.22)] bg-[hsl(var(--gold)/0.08)] px-3 py-1 text-xs font-medium text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+              Multi-shop control
+            </div>
+          }
+        />
+
+        <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+          <LuxuryCard className="p-6">
+            <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/55">
+                  <Crown className="h-3.5 w-3.5 text-primary" />
+                  Owner Control Center
+                </div>
+                <h1 className="pt-4 text-3xl font-semibold tracking-tight text-white xl:text-4xl">
+                  Open any shop and manage bookings, barbers, products, and reports from one polished desktop view.
+                </h1>
+                <p className="pt-3 text-sm leading-6 text-white/60">
+                  Built for operators who need quick oversight, fast navigation, and a premium workspace instead of a stretched mobile layout.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[420px]">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                  <div className="text-xs uppercase tracking-[0.18em] text-white/40">Shops</div>
+                  <div className="pt-2 text-2xl font-semibold text-white">{shops?.length ?? 0}</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                  <div className="text-xs uppercase tracking-[0.18em] text-white/40">Verified</div>
+                  <div className="pt-2 text-2xl font-semibold text-white">{(shops ?? []).filter((s) => s.is_verified).length}</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                  <div className="text-xs uppercase tracking-[0.18em] text-white/40">Rated</div>
+                  <div className="pt-2 text-2xl font-semibold text-white">
+                    {(shops ?? []).filter((s) => Number(s.rating_count ?? 0) > 0).length}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </LuxuryCard>
+
+          <LuxuryCard className="p-6">
+            <div className="text-sm font-semibold text-white">What opens next</div>
+            <div className="pt-2 text-sm leading-6 text-white/60">
+              Once you select a shop, the dashboard loads live KPIs, today’s schedule, revenue trends, quick actions, and every business module in the same visual system.
+            </div>
+            <div className="grid gap-3 pt-5">
+              {[
+                { label: "Bookings & Calendar", icon: CalendarDays },
+                { label: "Barbers & Services", icon: Scissors },
+                { label: "Customers & Reviews", icon: Users },
+                { label: "Orders & Products", icon: Package }
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.label} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05]">
+                      <Icon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="text-sm text-white/72">{item.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </LuxuryCard>
         </div>
+
         <LuxuryCard className="overflow-hidden">
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+            <div>
+              <div className="text-base font-semibold text-white">Choose a Shop</div>
+              <div className="text-sm text-white/55">Launch the business workspace with one click.</div>
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[980px] text-sm">
-              <thead className="text-xs text-muted-foreground">
+              <thead className="text-xs uppercase tracking-[0.18em] text-white/38">
                 <tr className="border-b border-white/10">
-                  <th className="px-4 py-3 text-left font-medium">Shop</th>
-                  <th className="px-4 py-3 text-left font-medium">Area</th>
-                  <th className="px-4 py-3 text-left font-medium">Rating</th>
-                  <th className="px-4 py-3 text-right font-medium">Open</th>
+                  <th className="px-5 py-4 text-left font-medium">Shop</th>
+                  <th className="px-5 py-4 text-left font-medium">Area</th>
+                  <th className="px-5 py-4 text-left font-medium">Rating</th>
+                  <th className="px-5 py-4 text-right font-medium">Open</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
                 {(shops ?? []).map((s) => (
-                  <tr key={s.id} className="hover:bg-white/5">
-                    <td className="px-4 py-3">
-                      <div className="font-medium">{s.name ?? "Shop"}</div>
-                      <div className="text-xs text-muted-foreground">{s.is_verified ? "Verified" : "Unverified"}</div>
+                  <tr key={s.id} className="transition hover:bg-white/[0.04]">
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-sm font-semibold text-primary">
+                          {(s.name ?? "S").slice(0, 1).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="font-medium text-white">{s.name ?? "Shop"}</div>
+                          <div className="flex items-center gap-2 text-xs text-white/45">
+                            {s.is_verified ? <BadgeCheck className="h-3.5 w-3.5 text-primary" /> : null}
+                            {s.is_verified ? "Verified shop" : "Unverified"}
+                          </div>
+                        </div>
+                      </div>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">{s.area ?? "-"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {Number(s.rating_avg ?? 0).toFixed(2)} ({Number(s.rating_count ?? 0)})
+                    <td className="px-5 py-4 text-white/60">{s.area ?? "-"}</td>
+                    <td className="px-5 py-4 text-white/60">
+                      <div className="inline-flex items-center gap-2">
+                        <Star className="h-3.5 w-3.5 text-primary" />
+                        {Number(s.rating_avg ?? 0).toFixed(2)} ({Number(s.rating_count ?? 0)})
+                      </div>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-4 text-right">
                       <Link
-                        className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm transition hover:bg-white/10"
+                        className="inline-flex items-center gap-2 rounded-xl border border-[hsl(var(--gold)/0.22)] bg-[hsl(var(--gold)/0.08)] px-4 py-2.5 text-sm font-medium text-primary transition hover:bg-[hsl(var(--gold)/0.14)]"
                         href={`/business/dashboard?shopId=${encodeURIComponent(s.id)}`}
                       >
                         Open
+                        <ArrowRight className="h-4 w-4" />
                       </Link>
                     </td>
                   </tr>
@@ -226,18 +314,58 @@ export default async function BusinessDashboardPage({
 
   return (
     <div className="grid gap-6">
-      <div className="flex flex-col gap-1">
-        <div className="text-2xl font-semibold tracking-tight">{shop?.name ?? "Dashboard"}</div>
-        <div className="text-sm text-muted-foreground">
-          {shop?.area ?? "Bahrain"} • {shop?.status ?? "active"} • {shop?.is_verified ? "Verified" : "Not verified"}
-        </div>
-      </div>
+      <BusinessPageHeader
+        title={shop?.name ?? "Business Dashboard"}
+        subtitle={`${shop?.area ?? "Bahrain"} • ${shop?.status ?? "active"} • ${shop?.is_verified ? "Verified" : "Not verified"}`}
+        actions={
+          <div className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--gold)/0.22)] bg-[hsl(var(--gold)/0.08)] px-3 py-1 text-xs font-medium text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            Premium workspace
+          </div>
+        }
+      />
 
-      <div className="grid gap-4 lg:grid-cols-4">
+      <LuxuryCard className="overflow-hidden p-6">
+        <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/50">
+              <Crown className="h-3.5 w-3.5 text-primary" />
+              Executive overview
+            </div>
+            <div className="max-w-3xl pt-4 text-3xl font-semibold leading-tight tracking-tight text-white">
+              Manage today’s bookings, team performance, revenue, and customer activity from one clean desktop control panel.
+            </div>
+            <div className="max-w-2xl pt-3 text-sm leading-6 text-white/60">
+              Your live business health updates here in real time so owners can move faster without digging through multiple screens.
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+            {[
+              { label: "Monthly Revenue", value: formatBhd(revenueBhdMonth), icon: Sparkles },
+              { label: "Review Score", value: avgRating.toFixed(2), icon: Star },
+              { label: "Repeat Customers", value: String(repeatCustomers), icon: Users }
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-xs uppercase tracking-[0.18em] text-white/40">{item.label}</div>
+                    <Icon className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="pt-2 text-xl font-semibold text-white">{item.value}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </LuxuryCard>
+
+      <div className="grid gap-4 xl:grid-cols-4">
         <LuxuryCard className="relative overflow-hidden p-5">
-          <div className="text-sm text-muted-foreground">Today’s Revenue</div>
-          <div className="pt-1 text-2xl font-semibold">{formatBhd(todayRevenueBhd)}</div>
-          <div className="pt-2 text-xs text-muted-foreground">Last 30 days: {formatBhd(revenueBhd30d)}</div>
+          <div className="text-xs uppercase tracking-[0.18em] text-white/40">Today’s Revenue</div>
+          <div className="pt-2 text-3xl font-semibold text-white">{formatBhd(todayRevenueBhd)}</div>
+          <div className="pt-2 text-xs text-white/50">Last 30 days: {formatBhd(revenueBhd30d)}</div>
           {sp.d ? (
             <svg className="absolute bottom-4 right-4 opacity-70" width={sp.w} height={sp.h} viewBox={`0 0 ${sp.w} ${sp.h}`}>
               <path d={sp.d} fill="none" stroke="hsl(var(--gold))" strokeWidth="2" />
@@ -246,26 +374,26 @@ export default async function BusinessDashboardPage({
         </LuxuryCard>
 
         <LuxuryCard className="p-5">
-          <div className="text-sm text-muted-foreground">Today’s Bookings</div>
-          <div className="pt-1 text-2xl font-semibold">{todayBookings}</div>
-          <div className="pt-2 text-xs text-muted-foreground">
-            Upcoming: <span className="text-foreground">{upcomingBookings}</span>
+          <div className="text-xs uppercase tracking-[0.18em] text-white/40">Today’s Bookings</div>
+          <div className="pt-2 text-3xl font-semibold text-white">{todayBookings}</div>
+          <div className="pt-2 text-xs text-white/50">
+            Upcoming: <span className="text-white">{upcomingBookings}</span>
           </div>
         </LuxuryCard>
 
         <LuxuryCard className="p-5">
-          <div className="text-sm text-muted-foreground">Customers</div>
-          <div className="pt-1 text-2xl font-semibold">{totalCustomers}</div>
-          <div className="pt-2 text-xs text-muted-foreground">
-            Repeat: <span className="text-foreground">{repeatCustomers}</span>
+          <div className="text-xs uppercase tracking-[0.18em] text-white/40">Customers</div>
+          <div className="pt-2 text-3xl font-semibold text-white">{totalCustomers}</div>
+          <div className="pt-2 text-xs text-white/50">
+            Repeat: <span className="text-white">{repeatCustomers}</span>
           </div>
         </LuxuryCard>
 
         <LuxuryCard className="p-5">
-          <div className="text-sm text-muted-foreground">Active Barbers</div>
-          <div className="pt-1 text-2xl font-semibold">{activeBarbers}</div>
-          <div className="pt-2 text-xs text-muted-foreground">
-            Pending orders: <span className="text-foreground">{pendingOrders}</span>
+          <div className="text-xs uppercase tracking-[0.18em] text-white/40">Active Barbers</div>
+          <div className="pt-2 text-3xl font-semibold text-white">{activeBarbers}</div>
+          <div className="pt-2 text-xs text-white/50">
+            Pending orders: <span className="text-white">{pendingOrders}</span>
           </div>
         </LuxuryCard>
       </div>
