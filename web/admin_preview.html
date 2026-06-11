@@ -1,0 +1,2403 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HALLAQ • Super Admin Preview</title>
+    <style>
+      :root {
+        --bg: #070707;
+        --card: #111111;
+        --text: #ffffff;
+        --muted: #a0a0a0;
+        --gold: #d4af37;
+        --border: rgba(212, 175, 55, 0.15);
+        --success: #42d17a;
+        --warning: #ffb547;
+        --danger: #ff4d4d;
+        --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.55);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background: radial-gradient(1000px 600px at 20% 10%, rgba(212, 175, 55, 0.12), transparent 60%),
+          radial-gradient(900px 520px at 85% 0%, rgba(212, 175, 55, 0.08), transparent 55%), var(--bg);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .app {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 14px;
+        min-height: 100%;
+        display: grid;
+        grid-template-columns: 292px 1fr;
+        gap: 14px;
+      }
+
+      .glass {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, transparent 65%);
+        opacity: 0.7;
+        pointer-events: none;
+      }
+
+      .glass::after {
+        content: "";
+        position: absolute;
+        inset: -120px;
+        background: radial-gradient(circle at top, rgba(212, 175, 55, 0.22), transparent 60%);
+        opacity: 0.55;
+        pointer-events: none;
+      }
+
+      .layer {
+        position: relative;
+        z-index: 1;
+      }
+
+      .sidebar {
+        height: calc(100vh - 28px);
+        position: sticky;
+        top: 14px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-title {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+      }
+
+      .brand-title .top {
+        font-weight: 650;
+        letter-spacing: 0.12em;
+        font-size: 12px;
+        color: var(--gold);
+      }
+
+      .brand-title .sub {
+        font-weight: 650;
+        font-size: 14px;
+      }
+
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 6px;
+        flex: 1;
+      }
+
+      .nav a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        color: var(--muted);
+        transition: background 160ms ease, border-color 160ms ease;
+      }
+
+      .nav a:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .nav a.active {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.18);
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .dot.gold {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: rgba(212, 175, 55, 0.25);
+      }
+
+      .card {
+        background: rgba(17, 17, 17, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        padding: 10px 12px;
+        border-radius: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 120ms ease, background 160ms ease, border-color 160ms ease;
+      }
+
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.09);
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .btn.primary {
+        background: rgba(212, 175, 55, 0.18);
+        border-color: rgba(212, 175, 55, 0.26);
+      }
+
+      .btn.primary:hover {
+        background: rgba(212, 175, 55, 0.24);
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .main {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .header {
+        position: sticky;
+        top: 14px;
+        padding: 14px;
+      }
+
+      .header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .search {
+        flex: 1;
+        max-width: 720px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+      }
+
+      .search-input {
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: var(--text);
+        width: 100%;
+        font-size: 13px;
+      }
+
+      .kbd {
+        margin-left: auto;
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+      }
+
+      .table thead th {
+        text-align: left;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 650;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .table tbody td {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        vertical-align: top;
+        font-size: 13px;
+      }
+
+      .table tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        font-size: 11px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .badge.success {
+        border-color: rgba(66, 209, 122, 0.25);
+        background: rgba(66, 209, 122, 0.1);
+        color: #c6ffe0;
+      }
+
+      .badge.warning {
+        border-color: rgba(255, 181, 71, 0.25);
+        background: rgba(255, 181, 71, 0.1);
+        color: #ffe0b5;
+      }
+
+      .badge.danger {
+        border-color: rgba(255, 77, 77, 0.25);
+        background: rgba(255, 77, 77, 0.1);
+        color: #ffd0d0;
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.68);
+        backdrop-filter: blur(10px);
+        z-index: 80;
+        display: none;
+        place-items: center;
+        padding: 18px;
+      }
+
+      .modal {
+        width: 100%;
+        max-width: 860px;
+        padding: 16px;
+      }
+
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .toast-wrap {
+        position: fixed;
+        right: 16px;
+        top: 16px;
+        z-index: 120;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+      }
+
+      .toast {
+        pointer-events: auto;
+        padding: 12px 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(17, 17, 17, 0.72);
+        box-shadow: var(--shadow-soft);
+        min-width: 300px;
+      }
+
+      .toast .tt {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .toast .tb {
+        margin-top: 6px;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .menu {
+        position: absolute;
+        right: 0;
+        top: 52px;
+        width: 360px;
+        z-index: 50;
+        display: none;
+      }
+
+      .menu-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        transition: background 160ms ease;
+      }
+
+      .menu-item:hover {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .menu-item .a {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .menu-item .a .t {
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .menu-item .a .b {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .menu-item .time {
+        font-size: 11px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .content {
+        padding: 0 6px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .title {
+        padding: 6px 6px 0;
+      }
+
+      .title h1 {
+        margin: 0;
+        font-size: 26px;
+        letter-spacing: -0.02em;
+      }
+
+      .title p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .kpi {
+        padding: 16px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 112px;
+      }
+
+      .kpi .k-title {
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        font-weight: 650;
+        text-transform: uppercase;
+      }
+
+      .kpi .k-value {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-top: 10px;
+      }
+
+      .pill {
+        margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .pill.success {
+        border-color: rgba(66, 209, 122, 0.25);
+        background: rgba(66, 209, 122, 0.1);
+        color: #c6ffe0;
+      }
+
+      .pill.warning {
+        border-color: rgba(255, 181, 71, 0.25);
+        background: rgba(255, 181, 71, 0.1);
+        color: #ffe0b5;
+      }
+
+      .pill.danger {
+        border-color: rgba(255, 77, 77, 0.25);
+        background: rgba(255, 77, 77, 0.1);
+        color: #ffd0d0;
+      }
+
+      .icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        display: grid;
+        place-items: center;
+        color: var(--gold);
+      }
+
+      .charts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .chart-title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .chart-title .h {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .chart-title .s {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .activity {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .row {
+        padding: 12px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .row .meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .row .meta .t {
+        font-size: 14px;
+      }
+
+      .row .meta .d {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .row .time {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .login-wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 14px;
+        min-height: 100%;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .login-card {
+        padding: 18px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 650;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .input {
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        padding: 0 12px;
+        outline: none;
+      }
+
+      .input:focus {
+        border-color: rgba(212, 175, 55, 0.35);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+      }
+
+      .split {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .hr {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        margin: 14px 0;
+      }
+
+      .toggle {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 99;
+        display: flex;
+        gap: 8px;
+      }
+
+      @media (max-width: 980px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .charts {
+          grid-template-columns: 1fr;
+        }
+        .login-wrap {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toggle">
+      <button class="btn" onclick="showScreen('login')">Login</button>
+      <button class="btn" onclick="showScreen('panel')">Preview Dashboard</button>
+      <button class="btn primary" onclick="openLiveAdmin()">Open Live Admin</button>
+    </div>
+
+    <div id="screen-login" class="login-wrap" style="display: none">
+      <div class="glass login-card">
+        <div class="layer">
+          <div class="brand">
+            <svg width="56" height="56" viewBox="0 0 512 512" aria-label="Hallaq">
+              <defs>
+                <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#FFE08A" />
+                  <stop offset="0.55" stop-color="#D4AF37" />
+                  <stop offset="1" stop-color="#8E6B1F" />
+                </linearGradient>
+                <radialGradient id="glow" cx="0.5" cy="0.35" r="0.75">
+                  <stop offset="0" stop-color="#D4AF37" stop-opacity="0.22" />
+                  <stop offset="1" stop-color="#0A0A0A" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="256" cy="256" r="236" fill="#0A0A0A" />
+              <circle cx="256" cy="256" r="236" fill="url(#glow)" />
+              <circle cx="256" cy="256" r="182" fill="#0F0F0F" stroke="#2A2A2A" stroke-width="4" />
+              <circle cx="256" cy="256" r="150" fill="#0B0B0B" stroke="#1F1F1F" stroke-width="2" />
+              <g fill="none" stroke="url(#gold)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="206" cy="330" r="22" />
+                <circle cx="306" cy="330" r="22" />
+                <path d="M222 318 L300 212" />
+                <path d="M290 318 L212 212" />
+                <path d="M250 244 L238 216" />
+                <path d="M262 244 L274 216" />
+              </g>
+              <text x="256" y="295" text-anchor="middle" font-size="210" font-weight="900" font-family="sans-serif" fill="url(#gold)">H</text>
+            </svg>
+            <div class="brand-title">
+              <div class="top">HALLAQ</div>
+              <div class="sub">Super Admin Login</div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div style="font-size: 14px; color: var(--muted); line-height: 1.6">
+            Admin access only. Enterprise security feel with protected routes, session management, and audit-ready workflows.
+          </div>
+
+          <div class="field">
+            <div class="label">Email</div>
+            <input class="input" placeholder="admin@hallaq.com" />
+          </div>
+          <div class="field">
+            <div class="label">Password</div>
+            <input class="input" placeholder="••••••••" type="password" />
+          </div>
+
+          <div class="split">
+            <label style="display: flex; align-items: center; gap: 8px">
+              <input type="checkbox" checked />
+              Remember me
+            </label>
+            <a href="#" style="color: var(--muted); text-decoration: underline; text-underline-offset: 4px">Forgot password</a>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 14px">
+            <button class="btn primary" style="flex: 1" onclick="openLiveAdmin()">Sign in</button>
+            <button class="btn" onclick="alert('This is a static preview HTML only.')">Security</button>
+          </div>
+
+          <div style="margin-top: 12px; font-size: 12px; color: var(--muted)">
+            Session is encrypted and protected by Supabase Auth (preview only).
+          </div>
+        </div>
+      </div>
+
+      <div class="glass login-card">
+        <div class="layer">
+          <div style="font-weight: 700; font-size: 20px; letter-spacing: -0.02em">Luxury black & gold</div>
+          <div style="margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.6">
+            This file is a fast preview you can open in a browser with zero setup. The real admin is the Next.js app in
+            <span style="color: var(--gold)">apps/admin</span>.
+          </div>
+          <div style="margin-top: 14px" class="grid">
+            <div class="card">
+              <div class="kpi" style="padding: 0; min-height: 0">
+                <div>
+                  <div class="k-title">Protected routes</div>
+                  <div class="k-value" style="font-size: 18px">Enabled</div>
+                  <span class="pill success">RBAC</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="kpi" style="padding: 0; min-height: 0">
+                <div>
+                  <div class="k-title">Audit logs</div>
+                  <div class="k-value" style="font-size: 18px">Ready</div>
+                  <span class="pill warning">Admin-only</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="kpi" style="padding: 0; min-height: 0">
+                <div>
+                  <div class="k-title">Moderation</div>
+                  <div class="k-value" style="font-size: 18px">Queue</div>
+                  <span class="pill danger">Pending</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="kpi" style="padding: 0; min-height: 0">
+                <div>
+                  <div class="k-title">Exports</div>
+                  <div class="k-value" style="font-size: 18px">CSV</div>
+                  <span class="pill success">Fast</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-panel" class="app">
+      <aside class="glass sidebar">
+        <div class="layer">
+          <div class="brand">
+            <svg width="42" height="42" viewBox="0 0 512 512" aria-label="Hallaq">
+              <defs>
+                <linearGradient id="gold2" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#FFE08A" />
+                  <stop offset="0.55" stop-color="#D4AF37" />
+                  <stop offset="1" stop-color="#8E6B1F" />
+                </linearGradient>
+              </defs>
+              <circle cx="256" cy="256" r="236" fill="#0A0A0A" />
+              <circle cx="256" cy="256" r="182" fill="#0F0F0F" stroke="#2A2A2A" stroke-width="4" />
+              <text x="256" y="295" text-anchor="middle" font-size="210" font-weight="900" font-family="sans-serif" fill="url(#gold2)">H</text>
+            </svg>
+            <div class="brand-title">
+              <div class="top">HALLAQ</div>
+              <div class="sub">Super Admin</div>
+            </div>
+          </div>
+
+          <div class="nav">
+            <a class="active" href="#" data-page="dashboard"><span class="dot gold"></span> Dashboard</a>
+            <a href="#" data-page="users"><span class="dot"></span> Users</a>
+            <a href="#" data-page="stores"><span class="dot"></span> Stores</a>
+            <a href="#" data-page="barbers"><span class="dot"></span> Barbers</a>
+            <a href="#" data-page="appointments"><span class="dot"></span> Appointments</a>
+            <a href="#" data-page="reels"><span class="dot"></span> Posts & Reels</a>
+            <a href="#" data-page="reviews"><span class="dot"></span> Reviews</a>
+            <a href="#" data-page="verification"><span class="dot"></span> Verification</a>
+            <a href="#" data-page="awards"><span class="dot"></span> Awards</a>
+            <a href="#" data-page="advertisements"><span class="dot"></span> Advertisements</a>
+            <a href="#" data-page="analytics"><span class="dot"></span> Analytics</a>
+            <a href="#" data-page="reports"><span class="dot"></span> Reports</a>
+            <a href="#" data-page="settings"><span class="dot"></span> Settings</a>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+              <div>
+                <div style="font-size: 12px; color: var(--muted); font-weight: 650">Admin session</div>
+                <div style="font-size: 11px; color: var(--muted); margin-top: 6px">Protected routes enabled</div>
+              </div>
+              <button class="btn" onclick="showScreen('login')">Logout</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main">
+        <header class="glass header">
+          <div class="layer header-row">
+            <div class="search">
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: rgba(212, 175, 55, 0.35)"></span>
+              <input id="globalSearch" class="search-input" placeholder="Global search: users, stores, barbers, reels…" />
+              <span class="kbd">Ctrl K</span>
+            </div>
+            <div style="display: flex; gap: 10px">
+              <button id="liveToggle" class="btn">Live</button>
+              <div style="position: relative">
+                <button id="bellBtn" class="btn" style="width: 44px; padding: 10px 0">N</button>
+                <div id="bellMenu" class="glass menu">
+                  <div class="layer">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+                      <div style="font-size: 13px; font-weight: 700">Notifications</div>
+                      <div id="bellCount" class="badge">0</div>
+                    </div>
+                    <div id="bellList"></div>
+                  </div>
+                </div>
+              </div>
+              <button id="createBtn" class="btn primary">Create</button>
+            </div>
+          </div>
+        </header>
+
+        <div id="appContent" class="content"></div>
+      </div>
+    </div>
+
+    <div id="overlay" class="overlay">
+      <div id="modal" class="glass modal">
+        <div class="layer">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div id="modalTitle" style="font-size: 16px; font-weight: 800; letter-spacing: -0.01em">Create</div>
+              <div id="modalSubtitle" style="font-size: 12px; color: var(--muted)">Action</div>
+            </div>
+            <button class="btn" onclick="closeModal()" style="width: 44px; padding: 10px 0">X</button>
+          </div>
+          <div id="modalBody" style="margin-top: 14px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastWrap" class="toast-wrap"></div>
+
+    <script>
+      function showScreen(name) {
+        document.getElementById("screen-login").style.display = name === "login" ? "grid" : "none";
+        document.getElementById("screen-panel").style.display = name === "panel" ? "grid" : "none";
+      }
+
+      function openLiveAdmin() {
+        if (window.location.protocol === "file:") {
+          alert("This preview HTML cannot log in when opened as a file. Run the admin app (apps/admin) and open /auth/sign-in.");
+          return;
+        }
+        window.location.href = new URL("/auth/sign-in", window.location.origin).toString();
+      }
+
+      const STORAGE_KEY = "hallaq_admin_preview_state_v2";
+      let state = null;
+      let currentPage = "dashboard";
+      let liveTimer = null;
+
+      function nowIso() {
+        return new Date().toISOString();
+      }
+
+      function uid(prefix) {
+        return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function loadState() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+        return null;
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function toast(title, body) {
+        const wrap = document.getElementById("toastWrap");
+        const el = document.createElement("div");
+        el.className = "toast";
+        el.innerHTML = `<div class="tt">${escapeHtml(title)}</div><div class="tb">${escapeHtml(body)}</div>`;
+        wrap.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(-6px)";
+          el.style.transition = "all 220ms ease";
+          setTimeout(() => el.remove(), 260);
+        }, 2600);
+      }
+
+      function notify(type, title, body, data) {
+        state.notifications.unshift({
+          id: uid("n"),
+          type,
+          title,
+          body,
+          data: data || {},
+          read: false,
+          createdAt: nowIso()
+        });
+        state.notifications = state.notifications.slice(0, 25);
+        saveState();
+        renderBell();
+      }
+
+      function demoPick(arr, seed) {
+        return arr[Math.floor(seed * arr.length) % arr.length];
+      }
+
+      function generateDemo() {
+        const areas = ["Manama", "Seef", "Juffair", "Adliya", "Saar", "Riffa", "Isa Town", "Muharraq", "Hamad Town", "Budaiya", "Sanabis", "Amwaj Islands"];
+        const shopNames = ["Gold Fade Studio", "Black Velvet Barbers", "Seef Gentlemen Club", "Manama Signature Cuts", "The Royal Clippers", "Hallaq Elite Lounge", "Urban Gold Barbers", "Noble Beard Co.", "The Fade Atelier", "Midnight Grooming"];
+        const barberNames = ["Ahmed", "Mohamed", "Ali", "Hassan", "Yousef", "Omar", "Khalid", "Salman", "Faisal", "Nasser", "Mahdi", "Saeed"];
+        const roles = ["customer", "customer", "customer", "barber", "shop_owner"];
+
+        const users = Array.from({ length: 220 }).map((_, i) => ({
+          id: uid("u"),
+          fullName: `User ${i + 1}`,
+          phone: `+973 3${String(1000000 + i).slice(1)}`,
+          role: demoPick(roles, i * 0.37),
+          area: demoPick(areas, i * 0.19),
+          status: "active",
+          createdAt: nowIso()
+        }));
+
+        const stores = Array.from({ length: 20 }).map((_, i) => ({
+          id: uid("s"),
+          name: `${demoPick(shopNames, i * 0.33)} ${i < 3 ? "• Elite" : ""}`.trim(),
+          area: demoPick(areas, i * 0.21),
+          address: `${demoPick(areas, i * 0.21)} • Building ${10 + i}`,
+          whatsapp: `+973 3${String(9000000 + i).slice(1)}`,
+          instagram: `@hallaq_${i + 1}`,
+          verified: i % 4 !== 0,
+          featured: i % 6 === 0,
+          createdAt: nowIso()
+        }));
+
+        const barbers = Array.from({ length: 50 }).map((_, i) => ({
+          id: uid("b"),
+          name: `${demoPick(barberNames, i * 0.29)} ${i + 1}`,
+          area: demoPick(areas, i * 0.17),
+          independent: i % 5 === 0,
+          shopId: i % 5 === 0 ? null : stores[i % stores.length].id,
+          verified: i % 3 !== 0,
+          certified: i % 7 === 0,
+          elite: i % 9 === 0,
+          trending: i % 8 === 0,
+          createdAt: nowIso()
+        }));
+
+        const reels = Array.from({ length: 40 }).map((_, i) => ({
+          id: uid("r"),
+          caption: `Fresh cut • ${demoPick(areas, i * 0.23)} • #fade #hallaq`,
+          authorType: i % 4 === 0 ? "shop" : "barber",
+          authorId: i % 4 === 0 ? stores[i % stores.length].id : barbers[i % barbers.length].id,
+          mediaType: i % 3 === 0 ? "image" : "video",
+          mediaUrl: "",
+          status: i % 6 === 0 ? "pending" : "approved",
+          featured: i % 10 === 0,
+          sponsored: i % 13 === 0,
+          likes: Math.floor(20 + (i * 31) % 440),
+          comments: Math.floor((i * 9) % 52),
+          saves: Math.floor((i * 7) % 58),
+          createdAt: nowIso()
+        }));
+
+        const roleRequests = Array.from({ length: 8 }).map((_, i) => ({
+          id: uid("rr"),
+          profileId: users[i].id,
+          requestedRole: i % 2 === 0 ? "barber" : "shop_owner",
+          shopName: i % 2 === 0 ? null : demoPick(shopNames, i * 0.43),
+          phone: users[i].phone,
+          notes: "Requesting upgrade",
+          status: "pending",
+          createdAt: nowIso()
+        }));
+
+        const advertisements = Array.from({ length: 6 }).map((_, i) => ({
+          id: uid("ad"),
+          title: `Campaign ${i + 1}`,
+          active: i % 3 !== 0,
+          targetUrl: "https://app.hallaq.com",
+          createdAt: nowIso()
+        }));
+
+        const awards = [];
+        const awardCategories = [
+          "Best Barber Bahrain",
+          "Best Shop Bahrain",
+          "Best Fade Specialist",
+          "Best Beard Specialist",
+          "Rising Star",
+          "Community Choice"
+        ];
+
+        const settings = {
+          maintenance_mode: false,
+          allow_registration: true,
+          require_verification: true,
+          require_post_approval: true,
+          enable_ads: true,
+          enable_awards: true,
+          enable_premium: true
+        };
+
+        return {
+          users,
+          stores,
+          barbers,
+          reels,
+          bookings: [],
+          reviews: [],
+          roleRequests,
+          advertisements,
+          awards,
+          awardCategories,
+          settings,
+          activity: [],
+          notifications: []
+        };
+      }
+
+      function ensureState() {
+        state = loadState();
+        if (!state) {
+          state = generateDemo();
+          saveState();
+          notify("system", "Demo data generated", "Local demo data has been created. You can edit and control everything.");
+        }
+      }
+
+      function setActiveNav(page) {
+        document.querySelectorAll(".nav a[data-page]").forEach((a) => {
+          const is = a.getAttribute("data-page") === page;
+          a.classList.toggle("active", is);
+          const dot = a.querySelector(".dot");
+          if (dot) dot.classList.toggle("gold", is);
+        });
+      }
+
+      function formatRelative(iso) {
+        const d = new Date(iso).getTime();
+        const diff = Math.max(0, Date.now() - d);
+        const m = Math.floor(diff / 60000);
+        if (m < 1) return "now";
+        if (m < 60) return `${m}m`;
+        const h = Math.floor(m / 60);
+        if (h < 24) return `${h}h`;
+        return `${Math.floor(h / 24)}d`;
+      }
+
+      function kpis() {
+        const totalUsers = state.users.length;
+        const totalStores = state.stores.length;
+        const totalBarbers = state.barbers.length;
+        const totalBookings = state.bookings.length || 1000;
+        const revenue = 24850;
+        const totalPosts = 120;
+        const totalReels = state.reels.length;
+        const pendingApprovals = state.reels.filter((r) => r.status === "pending").length + state.roleRequests.filter((r) => r.status === "pending").length;
+        return { totalUsers, totalStores, totalBarbers, totalBookings, revenue, totalPosts, totalReels, pendingApprovals };
+      }
+
+      function chartSvg(id) {
+        return `
+          <svg viewBox="0 0 540 140" width="100%" height="140" aria-label="chart">
+            <defs>
+              <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="rgba(212,175,55,0.28)"></stop>
+                <stop offset="1" stop-color="rgba(212,175,55,0)"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M 18 106 L 56 92 L 94 98 L 132 70 L 170 78 L 208 64 L 246 72 L 284 54 L 322 62 L 360 46 L 398 56 L 436 40 L 474 50 L 522 34 L 522 126 L 18 126 Z" fill="url(#${id})"></path>
+            <path d="M 18 106 L 56 92 L 94 98 L 132 70 L 170 78 L 208 64 L 246 72 L 284 54 L 322 62 L 360 46 L 398 56 L 436 40 L 474 50 L 522 34" fill="none" stroke="rgba(212,175,55,1)" stroke-width="3" stroke-linecap="round"></path>
+          </svg>
+        `;
+      }
+
+      function renderDashboard() {
+        const d = kpis();
+        const activity = state.activity.slice(0, 6);
+        return `
+          <div class="title">
+            <h1>Dashboard</h1>
+            <p>Premium overview of platform health, growth, and approvals.</p>
+          </div>
+
+          <div class="grid">
+            ${[
+              { t: "Total Users", v: d.totalUsers, pill: " +12.4% this month ", tone: "success", icon: "U" },
+              { t: "Total Stores", v: d.totalStores, pill: " +3.1% growth ", tone: "success", icon: "S" },
+              { t: "Total Barbers", v: d.totalBarbers, pill: " Stable ", tone: "warning", icon: "B" },
+              { t: "Total Bookings", v: d.totalBookings, pill: " +18.9% today ", tone: "success", icon: "K" }
+            ]
+              .map(
+                (x) => `
+              <div class="glass kpi">
+                <div class="layer">
+                  <div class="k-title">${x.t}</div>
+                  <div class="k-value">${x.v}</div>
+                  <span class="pill ${x.tone}">${x.pill}</span>
+                </div>
+                <div class="layer icon">${x.icon}</div>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+
+          <div class="grid">
+            ${[
+              { t: "Total Revenue", v: `${d.revenue.toLocaleString()} BHD`, pill: " +6.2% WoW ", tone: "success", icon: "$" },
+              { t: "Total Posts", v: d.totalPosts, pill: " Content pipeline ", tone: "warning", icon: "P" },
+              { t: "Total Reels", v: d.totalReels, pill: " +9.0% engagement ", tone: "success", icon: "R" },
+              { t: "Pending Approvals", v: d.pendingApprovals, pill: " Needs review ", tone: "danger", icon: "!" }
+            ]
+              .map(
+                (x) => `
+              <div class="glass kpi">
+                <div class="layer">
+                  <div class="k-title">${x.t}</div>
+                  <div class="k-value">${x.v}</div>
+                  <span class="pill ${x.tone}">${x.pill}</span>
+                </div>
+                <div class="layer icon">${x.icon}</div>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+
+          <div class="charts">
+            <div class="glass card">
+              <div class="layer">
+                <div class="chart-title">
+                  <div>
+                    <div class="h">Daily Bookings</div>
+                    <div class="s">Last 14 days</div>
+                  </div>
+                  <div class="s">110</div>
+                </div>
+                ${chartSvg("area_d")}
+              </div>
+            </div>
+            <div class="glass card">
+              <div class="layer">
+                <div class="chart-title">
+                  <div>
+                    <div class="h">Revenue Growth</div>
+                    <div class="s">Last 6 months</div>
+                  </div>
+                  <div class="s">6,900 BHD</div>
+                </div>
+                ${chartSvg("area_r")}
+              </div>
+            </div>
+          </div>
+
+          <div class="glass card">
+            <div class="layer">
+              <div class="chart-title">
+                <div>
+                  <div class="h">Recent Activity</div>
+                  <div class="s">Latest events across the platform</div>
+                </div>
+              </div>
+              <div class="activity">
+                ${
+                  activity.length
+                    ? activity
+                        .map(
+                          (a) => `
+                  <div class="row">
+                    <div class="meta">
+                      <div class="t"><span style="color: var(--gold)">${escapeHtml(a.type)}</span> • ${escapeHtml(a.title)}</div>
+                      <div class="d">${escapeHtml(a.subtitle)}</div>
+                    </div>
+                    <div class="time">${escapeHtml(a.at)}</div>
+                  </div>
+                `
+                        )
+                        .join("")
+                    : `<div class="row"><div class="meta"><div class="t">No activity yet</div><div class="d">Start managing content to generate audit activity.</div></div><div class="time">—</div></div>`
+                }
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderUsers(filter) {
+        const q = (filter || "").trim().toLowerCase();
+        const rows = state.users
+          .filter((u) => !q || u.fullName.toLowerCase().includes(q) || u.role.toLowerCase().includes(q) || u.area.toLowerCase().includes(q))
+          .slice(0, 60);
+
+        return `
+          <div class="title">
+            <h1>Users</h1>
+            <p>Search, edit roles, suspend, and manage platform access.</p>
+          </div>
+
+          <div class="glass card">
+            <div class="layer" style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+              <div style="display:flex; flex-direction:column; gap:6px">
+                <div style="font-weight:700">Users</div>
+                <div style="font-size:12px; color:var(--muted)">${state.users.length} total • showing ${rows.length}</div>
+              </div>
+              <div style="display:flex; gap:10px">
+                <button class="btn" data-action="export" data-entity="users">Export CSV</button>
+                <button class="btn primary" data-action="openCreate" data-entity="users">Create User</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass card">
+            <div class="layer">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Area</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows
+                    .map((u) => {
+                      const tone = u.status === "active" ? "success" : "danger";
+                      return `
+                        <tr>
+                          <td>
+                            <div style="font-weight:700">${escapeHtml(u.fullName)}</div>
+                            <div style="margin-top:6px; font-size:12px; color:var(--muted)">${escapeHtml(u.phone)}</div>
+                          </td>
+                          <td><span class="badge">${escapeHtml(u.role)}</span></td>
+                          <td style="color:var(--muted)">${escapeHtml(u.area)}</td>
+                          <td><span class="badge ${tone}">${escapeHtml(u.status)}</span></td>
+                          <td style="text-align:right">
+                            <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap">
+                              <button class="btn" data-action="editUser" data-id="${u.id}">Edit</button>
+                              <button class="btn" data-action="toggleUser" data-id="${u.id}">${u.status === "active" ? "Suspend" : "Activate"}</button>
+                              <button class="btn" data-action="deleteUser" data-id="${u.id}">Delete</button>
+                            </div>
+                          </td>
+                        </tr>
+                      `;
+                    })
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderStores(filter) {
+        const q = (filter || "").trim().toLowerCase();
+        const rows = state.stores
+          .filter((s) => !q || s.name.toLowerCase().includes(q) || s.area.toLowerCase().includes(q))
+          .slice(0, 60);
+
+        return `
+          <div class="title">
+            <h1>Stores</h1>
+            <p>Create, edit, verify, feature, and manage store onboarding.</p>
+          </div>
+
+          <div class="glass card">
+            <div class="layer" style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+              <div style="display:flex; flex-direction:column; gap:6px">
+                <div style="font-weight:700">Stores</div>
+                <div style="font-size:12px; color:var(--muted)">${state.stores.length} total • showing ${rows.length}</div>
+              </div>
+              <div style="display:flex; gap:10px">
+                <button class="btn" data-action="export" data-entity="stores">Export CSV</button>
+                <button class="btn primary" data-action="openCreate" data-entity="stores">Create Store</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass card">
+            <div class="layer">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Store</th>
+                    <th>Area</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows
+                    .map((s) => {
+                      const verified = s.verified ? "Verified" : "Unverified";
+                      const featured = s.featured ? "Featured" : "Standard";
+                      return `
+                        <tr>
+                          <td>
+                            <div style="font-weight:700">${escapeHtml(s.name)}</div>
+                            <div style="margin-top:6px; font-size:12px; color:var(--muted)">${escapeHtml(s.address)}</div>
+                          </td>
+                          <td style="color:var(--muted)">${escapeHtml(s.area)}</td>
+                          <td style="color:var(--muted)">
+                            <div>${escapeHtml(s.whatsapp)}</div>
+                            <div style="margin-top:6px; font-size:12px">${escapeHtml(s.instagram)}</div>
+                          </td>
+                          <td>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap">
+                              <span class="badge ${s.verified ? "success" : "warning"}">${verified}</span>
+                              <span class="badge ${s.featured ? "success" : ""}">${featured}</span>
+                            </div>
+                          </td>
+                          <td style="text-align:right">
+                            <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap">
+                              <button class="btn" data-action="editStore" data-id="${s.id}">Edit</button>
+                              <button class="btn" data-action="toggleStoreVerified" data-id="${s.id}">${s.verified ? "Unverify" : "Verify"}</button>
+                              <button class="btn" data-action="toggleStoreFeatured" data-id="${s.id}">${s.featured ? "Unfeature" : "Feature"}</button>
+                              <button class="btn" data-action="deleteStore" data-id="${s.id}">Delete</button>
+                            </div>
+                          </td>
+                        </tr>
+                      `;
+                    })
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderBarbers(filter) {
+        const q = (filter || "").trim().toLowerCase();
+        const rows = state.barbers
+          .filter((b) => !q || b.name.toLowerCase().includes(q) || b.area.toLowerCase().includes(q))
+          .slice(0, 60);
+
+        return `
+          <div class="title">
+            <h1>Barbers</h1>
+            <p>Verify, certify, assign to shops, and manage premium badges.</p>
+          </div>
+
+          <div class="glass card">
+            <div class="layer" style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+              <div style="display:flex; flex-direction:column; gap:6px">
+                <div style="font-weight:700">Barbers</div>
+                <div style="font-size:12px; color:var(--muted)">${state.barbers.length} total • showing ${rows.length}</div>
+              </div>
+              <div style="display:flex; gap:10px">
+                <button class="btn" data-action="export" data-entity="barbers">Export CSV</button>
+                <button class="btn primary" data-action="openCreate" data-entity="barbers">Create Barber</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass card">
+            <div class="layer">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Barber</th>
+                    <th>Area</th>
+                    <th>Assignment</th>
+                    <th>Badges</th>
+                    <th style="text-align:right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows
+                    .map((b) => {
+                      const shop = b.shopId ? (state.stores.find((s) => s.id === b.shopId)?.name || "Shop") : "—";
+                      return `
+                        <tr>
+                          <td style="font-weight:700">${escapeHtml(b.name)}</td>
+                          <td style="color:var(--muted)">${escapeHtml(b.area)}</td>
+                          <td style="color:var(--muted)">${b.independent ? `<span class="badge success">Independent</span>` : `<span class="badge">Shop • ${escapeHtml(shop)}</span>`}</td>
+                          <td>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap">
+                              <span class="badge ${b.verified ? "success" : "warning"}">${b.verified ? "Verified" : "Unverified"}</span>
+                              <span class="badge ${b.certified ? "success" : ""}">${b.certified ? "Certified" : "Not certified"}</span>
+                              ${b.elite ? `<span class="badge warning">Elite</span>` : ``}
+                              ${b.trending ? `<span class="badge warning">Trending</span>` : ``}
+                            </div>
+                          </td>
+                          <td style="text-align:right">
+                            <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap">
+                              <button class="btn" data-action="editBarber" data-id="${b.id}">Edit</button>
+                              <button class="btn" data-action="toggleBarberVerified" data-id="${b.id}">${b.verified ? "Unverify" : "Verify"}</button>
+                              <button class="btn" data-action="toggleBarberCertified" data-id="${b.id}">${b.certified ? "Uncertify" : "Certify"}</button>
+                              <button class="btn" data-action="deleteBarber" data-id="${b.id}">Delete</button>
+                            </div>
+                          </td>
+                        </tr>
+                      `;
+                    })
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderReels(filter) {
+        const q = (filter || "").trim().toLowerCase();
+        const approvalRequired = Boolean(state.settings.require_post_approval);
+        const rows = state.reels
+          .filter((r) => !q || r.caption.toLowerCase().includes(q) || r.status.toLowerCase().includes(q))
+          .slice(0, 60);
+
+        return `
+          <div class="title">
+            <h1>Posts & Reels</h1>
+            <p>Upload, moderate approvals, feature content, and control sponsorship.</p>
+          </div>
+
+          <div class="glass card">
+            <div class="layer" style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+              <div style="display:flex; flex-direction:column; gap:6px">
+                <div style="font-weight:700">Moderation</div>
+                <div style="font-size:12px; color:var(--muted)">${approvalRequired ? "Approval required • pending items are blocked" : "Auto-approved • moderation still available"}</div>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap">
+                <button class="btn" data-action="filterReels" data-status="pending">Pending</button>
+                <button class="btn" data-action="filterReels" data-status="approved">Approved</button>
+                <button class="btn" data-action="filterReels" data-status="rejected">Rejected</button>
+                <button class="btn primary" data-action="openCreate" data-entity="reels">Upload</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass card">
+            <div class="layer">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Caption</th>
+                    <th>Author</th>
+                    <th>Status</th>
+                    <th>Engagement</th>
+                    <th style="text-align:right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows
+                    .map((r) => {
+                      const author =
+                        r.authorType === "shop"
+                          ? state.stores.find((s) => s.id === r.authorId)?.name || "Shop"
+                          : state.barbers.find((b) => b.id === r.authorId)?.name || "Barber";
+                      const st = r.status;
+                      const tone = st === "approved" ? "success" : st === "pending" ? "warning" : "danger";
+                      return `
+                        <tr>
+                          <td>
+                            <div style="font-weight:700">${escapeHtml(r.caption)}</div>
+                            <div style="margin-top:6px; font-size:12px; color:var(--muted)">${escapeHtml(r.mediaType)} • ${formatRelative(r.createdAt)}</div>
+                          </td>
+                          <td style="color:var(--muted)">${escapeHtml(author)}</td>
+                          <td><span class="badge ${tone}">${escapeHtml(st)}</span> ${r.featured ? `<span class="badge success">Featured</span>` : ``} ${r.sponsored ? `<span class="badge warning">Sponsored</span>` : ``}</td>
+                          <td style="color:var(--muted)">${r.likes} likes • ${r.comments} comments • ${r.saves} saves</td>
+                          <td style="text-align:right">
+                            <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap">
+                              ${
+                                st !== "approved"
+                                  ? `<button class="btn primary" data-action="approveReel" data-id="${r.id}">Approve</button>`
+                                  : ``
+                              }
+                              ${
+                                st !== "rejected"
+                                  ? `<button class="btn" data-action="rejectReel" data-id="${r.id}">Reject</button>`
+                                  : ``
+                              }
+                              <button class="btn" data-action="toggleReelFeatured" data-id="${r.id}">${r.featured ? "Unfeature" : "Feature"}</button>
+                              <button class="btn" data-action="toggleReelSponsored" data-id="${r.id}">${r.sponsored ? "Unsponsor" : "Sponsor"}</button>
+                              <button class="btn" data-action="deleteReel" data-id="${r.id}">Delete</button>
+                            </div>
+                          </td>
+                        </tr>
+                      `;
+                    })
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderVerification(filter) {
+        const q = (filter || "").trim().toLowerCase();
+        const rows = state.roleRequests.filter((r) => !q || r.status.toLowerCase().includes(q) || (r.shopName || "").toLowerCase().includes(q));
+
+        return `
+          <div class="title">
+            <h1>Verification Center</h1>
+            <p>Approve role requests and keep the marketplace trusted.</p>
+          </div>
+
+          <div class="glass card">
+            <div class="layer">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Requested</th>
+                    <th>Profile</th>
+                    <th>Shop</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${
+                    rows.length
+                      ? rows
+                          .map((r) => {
+                            const tone = r.status === "approved" ? "success" : r.status === "pending" ? "warning" : "danger";
+                            return `
+                              <tr>
+                                <td style="font-weight:700">${escapeHtml(r.requestedRole)}</td>
+                                <td style="color:var(--muted)">${escapeHtml(r.profileId)}</td>
+                                <td style="color:var(--muted)">${escapeHtml(r.shopName || "—")}</td>
+                                <td><span class="badge ${tone}">${escapeHtml(r.status)}</span></td>
+                                <td style="text-align:right">
+                                  <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap">
+                                    <button class="btn primary" data-action="approveRoleRequest" data-id="${r.id}">Approve</button>
+                                    <button class="btn" data-action="rejectRoleRequest" data-id="${r.id}">Reject</button>
+                                  </div>
+                                </td>
+                              </tr>
+                            `;
+                          })
+                          .join("")
+                      : `<tr><td colspan="5" style="color:var(--muted)">No role requests.</td></tr>`
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderSettings() {
+        const s = state.settings;
+        const items = [
+          ["maintenance_mode", "Maintenance Mode"],
+          ["allow_registration", "Allow Registration"],
+          ["require_verification", "Require Verification"],
+          ["require_post_approval", "Require Post Approval"],
+          ["enable_ads", "Enable Ads"],
+          ["enable_awards", "Enable Awards"],
+          ["enable_premium", "Enable Premium"]
+        ];
+
+        return `
+          <div class="title">
+            <h1>Settings</h1>
+            <p>Platform feature flags. Everything saves locally in your browser.</p>
+          </div>
+
+          <div class="glass card">
+            <div class="layer">
+              <div class="modal-grid">
+                ${items
+                  .map(
+                    ([key, label]) => `
+                  <label class="row" style="align-items:center">
+                    <div class="meta">
+                      <div class="t" style="font-weight:700">${escapeHtml(label)}</div>
+                      <div class="d">Key: ${escapeHtml(key)}</div>
+                    </div>
+                    <div class="time">
+                      <input type="checkbox" data-action="toggleSetting" data-key="${escapeHtml(key)}" ${s[key] ? "checked" : ""} />
+                    </div>
+                  </label>
+                `
+                  )
+                  .join("")}
+              </div>
+
+              <div style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap">
+                <button class="btn" data-action="resetDemo">Reset Demo Data</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderReports() {
+        return `
+          <div class="title">
+            <h1>Reports</h1>
+            <p>Export data to CSV instantly.</p>
+          </div>
+
+          <div class="glass card">
+            <div class="layer" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap">
+              <div style="display:flex; flex-direction:column; gap:6px">
+                <div style="font-weight:700">Exports</div>
+                <div style="font-size:12px; color:var(--muted)">Downloads generated locally from your current state.</div>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap">
+                <button class="btn primary" data-action="export" data-entity="users">Export Users</button>
+                <button class="btn primary" data-action="export" data-entity="stores">Export Stores</button>
+                <button class="btn primary" data-action="export" data-entity="barbers">Export Barbers</button>
+                <button class="btn primary" data-action="export" data-entity="reels">Export Reels</button>
+                <button class="btn" data-action="export" data-entity="roleRequests">Export Role Requests</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderPlaceholder(title, subtitle) {
+        return `
+          <div class="title">
+            <h1>${escapeHtml(title)}</h1>
+            <p>${escapeHtml(subtitle)}</p>
+          </div>
+          <div class="glass card">
+            <div class="layer">
+              <div style="display:flex; flex-direction:column; gap:10px; color:var(--muted)">
+                <div class="badge">Live preview mode</div>
+                <div>This page is interactive in the real Next.js admin. In this HTML preview, you can focus on Dashboard, Users, Stores, Barbers, Posts & Reels, Verification, Reports, and Settings.</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function render() {
+        const content = document.getElementById("appContent");
+        const q = (document.getElementById("globalSearch").value || "").trim();
+
+        if (currentPage === "dashboard") content.innerHTML = renderDashboard();
+        else if (currentPage === "users") content.innerHTML = renderUsers(q);
+        else if (currentPage === "stores") content.innerHTML = renderStores(q);
+        else if (currentPage === "barbers") content.innerHTML = renderBarbers(q);
+        else if (currentPage === "reels") content.innerHTML = renderReels(q);
+        else if (currentPage === "verification") content.innerHTML = renderVerification(q);
+        else if (currentPage === "reports") content.innerHTML = renderReports();
+        else if (currentPage === "settings") content.innerHTML = renderSettings();
+        else if (currentPage === "analytics") content.innerHTML = renderPlaceholder("Analytics", "Insights and growth intelligence.");
+        else if (currentPage === "advertisements") content.innerHTML = renderPlaceholder("Advertisements", "Campaign scheduling and placements.");
+        else if (currentPage === "awards") content.innerHTML = renderPlaceholder("Awards", "Categories and winners management.");
+        else if (currentPage === "appointments") content.innerHTML = renderPlaceholder("Appointments", "Bookings monitor and status workflows.");
+        else if (currentPage === "reviews") content.innerHTML = renderPlaceholder("Reviews", "Moderation and review analytics.");
+        else content.innerHTML = renderDashboard();
+      }
+
+      function setPage(page) {
+        currentPage = page;
+        setActiveNav(page);
+        render();
+      }
+
+      function openModal(title, subtitle, bodyHtml) {
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalSubtitle").textContent = subtitle;
+        document.getElementById("modalBody").innerHTML = bodyHtml;
+        document.getElementById("overlay").style.display = "grid";
+      }
+
+      function closeModal() {
+        document.getElementById("overlay").style.display = "none";
+      }
+
+      function downloadCsv(filename, rows) {
+        const headers = Array.from(
+          rows.reduce((acc, r) => {
+            Object.keys(r).forEach((k) => acc.add(k));
+            return acc;
+          }, new Set())
+        );
+        const esc = (v) => `"${String(v ?? "").replaceAll('"', '""')}"`;
+        const csv = [headers.join(","), ...rows.map((r) => headers.map((h) => esc(r[h])).join(","))].join("\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function addActivity(type, title, subtitle) {
+        state.activity.unshift({ id: uid("act"), type, title, subtitle, at: formatRelative(nowIso()) });
+        state.activity = state.activity.slice(0, 25);
+        saveState();
+      }
+
+      function renderBell() {
+        const count = state.notifications.filter((n) => !n.read).length;
+        document.getElementById("bellCount").textContent = `${count}`;
+        document.getElementById("bellBtn").textContent = count ? `${count}` : "N";
+        const list = document.getElementById("bellList");
+        const items = state.notifications.slice(0, 10);
+        list.innerHTML = items.length
+          ? items
+              .map(
+                (n) => `
+            <div class="menu-item" data-action="markRead" data-id="${n.id}">
+              <div class="a">
+                <div class="t">${escapeHtml(n.title)}</div>
+                <div class="b">${escapeHtml(n.body)}</div>
+              </div>
+              <div class="time">${formatRelative(n.createdAt)}</div>
+            </div>
+          `
+              )
+              .join("")
+          : `<div class="menu-item"><div class="a"><div class="t">No notifications</div><div class="b">Actions will create alerts here.</div></div><div class="time">—</div></div>`;
+      }
+
+      function createEntityModal(entity) {
+        if (entity === "users") {
+          openModal(
+            "Create User",
+            "Local demo user",
+            `
+              <div class="modal-grid">
+                <div class="field"><div class="label">Full name</div><input id="cu_name" class="input" placeholder="Full name" /></div>
+                <div class="field"><div class="label">Role</div><input id="cu_role" class="input" placeholder="customer / barber / shop_owner / admin" value="customer" /></div>
+                <div class="field"><div class="label">Phone</div><input id="cu_phone" class="input" placeholder="+973 ..." /></div>
+                <div class="field"><div class="label">Area</div><input id="cu_area" class="input" placeholder="Manama" /></div>
+              </div>
+              <div style="margin-top:14px; display:flex; gap:10px">
+                <button class="btn primary" onclick="createUser()">Create</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+              </div>
+            `
+          );
+        } else if (entity === "stores") {
+          openModal(
+            "Create Store",
+            "Local demo store",
+            `
+              <div class="modal-grid">
+                <div class="field"><div class="label">Name</div><input id="cs_name" class="input" placeholder="Store name" /></div>
+                <div class="field"><div class="label">Area</div><input id="cs_area" class="input" placeholder="Seef" /></div>
+                <div class="field"><div class="label">WhatsApp</div><input id="cs_whatsapp" class="input" placeholder="+973 ..." /></div>
+                <div class="field"><div class="label">Instagram</div><input id="cs_instagram" class="input" placeholder="@..." /></div>
+                <div class="field" style="grid-column:1/-1"><div class="label">Address</div><input id="cs_address" class="input" placeholder="Address" /></div>
+              </div>
+              <div style="margin-top:14px; display:flex; gap:10px">
+                <button class="btn primary" onclick="createStore()">Create</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+              </div>
+            `
+          );
+        } else if (entity === "barbers") {
+          const shopOptions = state.stores
+            .map((s) => `<option value="${s.id}">${escapeHtml(s.name)}</option>`)
+            .join("");
+          openModal(
+            "Create Barber",
+            "Local demo barber",
+            `
+              <div class="modal-grid">
+                <div class="field"><div class="label">Name</div><input id="cb_name" class="input" placeholder="Barber name" /></div>
+                <div class="field"><div class="label">Area</div><input id="cb_area" class="input" placeholder="Manama" /></div>
+                <div class="field"><div class="label">Independent</div><input id="cb_ind" type="checkbox" /></div>
+                <div class="field"><div class="label">Shop</div><select id="cb_shop" class="input"><option value="">—</option>${shopOptions}</select></div>
+              </div>
+              <div style="margin-top:14px; display:flex; gap:10px">
+                <button class="btn primary" onclick="createBarber()">Create</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+              </div>
+            `
+          );
+        } else if (entity === "reels") {
+          const barberOptions = state.barbers.map((b) => `<option value="${b.id}">${escapeHtml(b.name)}</option>`).join("");
+          const storeOptions = state.stores.map((s) => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join("");
+          openModal(
+            "Upload Reel",
+            "Moderation-ready content",
+            `
+              <div class="modal-grid">
+                <div class="field"><div class="label">Caption</div><input id="cr_caption" class="input" placeholder="Fresh cut • #fade #hallaq" /></div>
+                <div class="field"><div class="label">Media type</div><select id="cr_mediaType" class="input"><option value="video">video</option><option value="image">image</option></select></div>
+                <div class="field"><div class="label">Barber</div><select id="cr_barber" class="input"><option value="">—</option>${barberOptions}</select></div>
+                <div class="field"><div class="label">Store</div><select id="cr_store" class="input"><option value="">—</option>${storeOptions}</select></div>
+                <div class="field" style="grid-column:1/-1"><div class="label">Media URL (optional)</div><input id="cr_mediaUrl" class="input" placeholder="https://..." /></div>
+              </div>
+              <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
+                <button class="btn primary" onclick="createReel()">Upload</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+              </div>
+            `
+          );
+        } else {
+          openModal("Create", "Not available in preview", `<div class="card">Use the real Next.js admin for this module.</div>`);
+        }
+      }
+
+      function createUser() {
+        const fullName = document.getElementById("cu_name").value.trim() || "New User";
+        const role = document.getElementById("cu_role").value.trim() || "customer";
+        const phone = document.getElementById("cu_phone").value.trim() || "+973";
+        const area = document.getElementById("cu_area").value.trim() || "Manama";
+        state.users.unshift({ id: uid("u"), fullName, role, phone, area, status: "active", createdAt: nowIso() });
+        addActivity("User Created", fullName, `Role: ${role}`);
+        notify("user", "User created", fullName, {});
+        saveState();
+        closeModal();
+        render();
+        toast("User created", fullName);
+      }
+
+      function createStore() {
+        const name = document.getElementById("cs_name").value.trim() || "New Store";
+        const area = document.getElementById("cs_area").value.trim() || "Manama";
+        const address = document.getElementById("cs_address").value.trim() || `${area} • Address`;
+        const whatsapp = document.getElementById("cs_whatsapp").value.trim() || "+973";
+        const instagram = document.getElementById("cs_instagram").value.trim() || "@hallaq";
+        state.stores.unshift({ id: uid("s"), name, area, address, whatsapp, instagram, verified: false, featured: false, createdAt: nowIso() });
+        addActivity("Store Registered", name, area);
+        notify("store", "Store registered", name, {});
+        saveState();
+        closeModal();
+        render();
+        toast("Store created", name);
+      }
+
+      function createBarber() {
+        const name = document.getElementById("cb_name").value.trim() || "New Barber";
+        const area = document.getElementById("cb_area").value.trim() || "Manama";
+        const independent = Boolean(document.getElementById("cb_ind").checked);
+        const shopId = document.getElementById("cb_shop").value || null;
+        state.barbers.unshift({ id: uid("b"), name, area, independent, shopId: independent ? null : shopId, verified: false, certified: false, elite: false, trending: false, createdAt: nowIso() });
+        addActivity("New Barber Added", name, area);
+        notify("barber", "New barber", name, {});
+        saveState();
+        closeModal();
+        render();
+        toast("Barber created", name);
+      }
+
+      function createReel() {
+        const caption = document.getElementById("cr_caption").value.trim() || "New reel";
+        const mediaType = document.getElementById("cr_mediaType").value;
+        const barberId = document.getElementById("cr_barber").value;
+        const storeId = document.getElementById("cr_store").value;
+        const mediaUrl = document.getElementById("cr_mediaUrl").value.trim();
+        const authorType = storeId ? "shop" : "barber";
+        const authorId = storeId || barberId;
+        if (!authorId) {
+          toast("Upload blocked", "Select a barber or a store as the author.");
+          return;
+        }
+        const status = state.settings.require_post_approval ? "pending" : "approved";
+        state.reels.unshift({ id: uid("r"), caption, authorType, authorId, mediaType, mediaUrl, status, featured: false, sponsored: false, likes: 0, comments: 0, saves: 0, createdAt: nowIso() });
+        addActivity("New Reel Uploaded", caption.slice(0, 42), status === "pending" ? "Pending approval" : "Approved");
+        notify("reel", status === "pending" ? "Reel pending approval" : "Reel uploaded", caption.slice(0, 90), {});
+        saveState();
+        closeModal();
+        render();
+        toast("Reel uploaded", status === "pending" ? "Pending approval" : "Approved");
+      }
+
+      function handleAction(action, id, extra) {
+        if (action === "export") {
+          const entity = extra;
+          if (entity === "users") downloadCsv("hallaq-users.csv", state.users);
+          if (entity === "stores") downloadCsv("hallaq-stores.csv", state.stores);
+          if (entity === "barbers") downloadCsv("hallaq-barbers.csv", state.barbers);
+          if (entity === "reels") downloadCsv("hallaq-reels.csv", state.reels);
+          if (entity === "roleRequests") downloadCsv("hallaq-role-requests.csv", state.roleRequests);
+          toast("Export ready", `${entity} CSV downloaded`);
+          return;
+        }
+
+        if (action === "openCreate") {
+          createEntityModal(extra);
+          return;
+        }
+
+        if (action === "toggleSetting") {
+          const key = extra;
+          state.settings[key] = !state.settings[key];
+          saveState();
+          toast("Settings updated", `${key} is now ${state.settings[key] ? "enabled" : "disabled"}`);
+          render();
+          return;
+        }
+
+        if (action === "resetDemo") {
+          localStorage.removeItem(STORAGE_KEY);
+          ensureState();
+          render();
+          toast("Reset complete", "Demo state regenerated.");
+          return;
+        }
+
+        if (action === "filterReels") {
+          document.getElementById("globalSearch").value = extra;
+          render();
+          return;
+        }
+
+        if (action === "approveReel") {
+          const r = state.reels.find((x) => x.id === id);
+          if (!r) return;
+          r.status = "approved";
+          addActivity("Reel Approved", r.caption.slice(0, 42), "Approved by admin");
+          notify("reel", "Reel approved", r.caption.slice(0, 90), {});
+          saveState();
+          render();
+          toast("Approved", "Reel approved");
+          return;
+        }
+
+        if (action === "rejectReel") {
+          const r = state.reels.find((x) => x.id === id);
+          if (!r) return;
+          r.status = "rejected";
+          addActivity("Reel Rejected", r.caption.slice(0, 42), "Rejected by admin");
+          notify("reel", "Reel rejected", r.caption.slice(0, 90), {});
+          saveState();
+          render();
+          toast("Rejected", "Reel rejected");
+          return;
+        }
+
+        if (action === "toggleReelFeatured") {
+          const r = state.reels.find((x) => x.id === id);
+          if (!r) return;
+          r.featured = !r.featured;
+          addActivity("Reel Featured", r.caption.slice(0, 42), r.featured ? "Featured" : "Unfeatured");
+          saveState();
+          render();
+          toast("Updated", r.featured ? "Featured" : "Unfeatured");
+          return;
+        }
+
+        if (action === "toggleReelSponsored") {
+          const r = state.reels.find((x) => x.id === id);
+          if (!r) return;
+          r.sponsored = !r.sponsored;
+          addActivity("Reel Sponsorship", r.caption.slice(0, 42), r.sponsored ? "Sponsored" : "Unsponsored");
+          saveState();
+          render();
+          toast("Updated", r.sponsored ? "Sponsored" : "Unsponsored");
+          return;
+        }
+
+        if (action === "deleteReel") {
+          state.reels = state.reels.filter((x) => x.id !== id);
+          addActivity("Reel Deleted", "Content removed", "Admin action");
+          saveState();
+          render();
+          toast("Deleted", "Reel deleted");
+          return;
+        }
+
+        if (action === "toggleUser") {
+          const u = state.users.find((x) => x.id === id);
+          if (!u) return;
+          u.status = u.status === "active" ? "suspended" : "active";
+          addActivity("User Status", u.fullName, u.status);
+          saveState();
+          render();
+          toast("Updated", `${u.fullName} is ${u.status}`);
+          return;
+        }
+
+        if (action === "deleteUser") {
+          const u = state.users.find((x) => x.id === id);
+          state.users = state.users.filter((x) => x.id !== id);
+          addActivity("User Deleted", u?.fullName || "User", "Removed");
+          saveState();
+          render();
+          toast("Deleted", "User deleted");
+          return;
+        }
+
+        if (action === "editUser") {
+          const u = state.users.find((x) => x.id === id);
+          if (!u) return;
+          openModal(
+            "Edit User",
+            "Update role and contact",
+            `
+              <div class="modal-grid">
+                <div class="field"><div class="label">Full name</div><input id="eu_name" class="input" value="${escapeHtml(u.fullName)}" /></div>
+                <div class="field"><div class="label">Role</div><input id="eu_role" class="input" value="${escapeHtml(u.role)}" /></div>
+                <div class="field"><div class="label">Phone</div><input id="eu_phone" class="input" value="${escapeHtml(u.phone)}" /></div>
+                <div class="field"><div class="label">Area</div><input id="eu_area" class="input" value="${escapeHtml(u.area)}" /></div>
+              </div>
+              <div style="margin-top:14px; display:flex; gap:10px">
+                <button class="btn primary" onclick="saveUser('${id}')">Save</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+              </div>
+            `
+          );
+          return;
+        }
+
+        if (action === "editStore") {
+          const s = state.stores.find((x) => x.id === id);
+          if (!s) return;
+          openModal(
+            "Edit Store",
+            "Update verification and contact",
+            `
+              <div class="modal-grid">
+                <div class="field"><div class="label">Name</div><input id="es_name" class="input" value="${escapeHtml(s.name)}" /></div>
+                <div class="field"><div class="label">Area</div><input id="es_area" class="input" value="${escapeHtml(s.area)}" /></div>
+                <div class="field"><div class="label">WhatsApp</div><input id="es_whatsapp" class="input" value="${escapeHtml(s.whatsapp)}" /></div>
+                <div class="field"><div class="label">Instagram</div><input id="es_instagram" class="input" value="${escapeHtml(s.instagram)}" /></div>
+                <div class="field" style="grid-column:1/-1"><div class="label">Address</div><input id="es_address" class="input" value="${escapeHtml(s.address)}" /></div>
+              </div>
+              <div style="margin-top:14px; display:flex; gap:10px">
+                <button class="btn primary" onclick="saveStore('${id}')">Save</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+              </div>
+            `
+          );
+          return;
+        }
+
+        if (action === "toggleStoreVerified") {
+          const s = state.stores.find((x) => x.id === id);
+          if (!s) return;
+          s.verified = !s.verified;
+          addActivity("Store Verification", s.name, s.verified ? "Verified" : "Unverified");
+          saveState();
+          render();
+          toast("Updated", s.verified ? "Verified" : "Unverified");
+          return;
+        }
+
+        if (action === "toggleStoreFeatured") {
+          const s = state.stores.find((x) => x.id === id);
+          if (!s) return;
+          s.featured = !s.featured;
+          addActivity("Store Featured", s.name, s.featured ? "Featured" : "Standard");
+          saveState();
+          render();
+          toast("Updated", s.featured ? "Featured" : "Standard");
+          return;
+        }
+
+        if (action === "deleteStore") {
+          const s = state.stores.find((x) => x.id === id);
+          state.stores = state.stores.filter((x) => x.id !== id);
+          addActivity("Store Deleted", s?.name || "Store", "Removed");
+          saveState();
+          render();
+          toast("Deleted", "Store deleted");
+          return;
+        }
+
+        if (action === "editBarber") {
+          const b = state.barbers.find((x) => x.id === id);
+          if (!b) return;
+          const shopOptions = state.stores
+            .map((s) => `<option value="${s.id}" ${b.shopId === s.id ? "selected" : ""}>${escapeHtml(s.name)}</option>`)
+            .join("");
+          openModal(
+            "Edit Barber",
+            "Update assignment and badges",
+            `
+              <div class="modal-grid">
+                <div class="field"><div class="label">Name</div><input id="eb_name" class="input" value="${escapeHtml(b.name)}" /></div>
+                <div class="field"><div class="label">Area</div><input id="eb_area" class="input" value="${escapeHtml(b.area)}" /></div>
+                <div class="field"><div class="label">Independent</div><input id="eb_ind" type="checkbox" ${b.independent ? "checked" : ""} /></div>
+                <div class="field"><div class="label">Shop</div><select id="eb_shop" class="input"><option value="">—</option>${shopOptions}</select></div>
+              </div>
+              <div style="margin-top:14px; display:flex; gap:10px">
+                <button class="btn primary" onclick="saveBarber('${id}')">Save</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+              </div>
+            `
+          );
+          return;
+        }
+
+        if (action === "toggleBarberVerified") {
+          const b = state.barbers.find((x) => x.id === id);
+          if (!b) return;
+          b.verified = !b.verified;
+          addActivity("Barber Verification", b.name, b.verified ? "Verified" : "Unverified");
+          saveState();
+          render();
+          toast("Updated", b.verified ? "Verified" : "Unverified");
+          return;
+        }
+
+        if (action === "toggleBarberCertified") {
+          const b = state.barbers.find((x) => x.id === id);
+          if (!b) return;
+          b.certified = !b.certified;
+          addActivity("Barber Certification", b.name, b.certified ? "Certified" : "Uncertified");
+          saveState();
+          render();
+          toast("Updated", b.certified ? "Certified" : "Uncertified");
+          return;
+        }
+
+        if (action === "deleteBarber") {
+          const b = state.barbers.find((x) => x.id === id);
+          state.barbers = state.barbers.filter((x) => x.id !== id);
+          addActivity("Barber Deleted", b?.name || "Barber", "Removed");
+          saveState();
+          render();
+          toast("Deleted", "Barber deleted");
+          return;
+        }
+
+        if (action === "approveRoleRequest") {
+          const r = state.roleRequests.find((x) => x.id === id);
+          if (!r) return;
+          r.status = "approved";
+          addActivity("Verification Approved", r.requestedRole, r.profileId);
+          notify("verification", "Role request approved", r.requestedRole, {});
+          saveState();
+          render();
+          toast("Approved", "Role request approved");
+          return;
+        }
+
+        if (action === "rejectRoleRequest") {
+          const r = state.roleRequests.find((x) => x.id === id);
+          if (!r) return;
+          r.status = "rejected";
+          addActivity("Verification Rejected", r.requestedRole, r.profileId);
+          notify("verification", "Role request rejected", r.requestedRole, {});
+          saveState();
+          render();
+          toast("Rejected", "Role request rejected");
+          return;
+        }
+
+        if (action === "markRead") {
+          const n = state.notifications.find((x) => x.id === id);
+          if (!n) return;
+          n.read = true;
+          saveState();
+          renderBell();
+          return;
+        }
+      }
+
+      function saveUser(id) {
+        const u = state.users.find((x) => x.id === id);
+        if (!u) return;
+        u.fullName = document.getElementById("eu_name").value.trim() || u.fullName;
+        u.role = document.getElementById("eu_role").value.trim() || u.role;
+        u.phone = document.getElementById("eu_phone").value.trim() || u.phone;
+        u.area = document.getElementById("eu_area").value.trim() || u.area;
+        addActivity("User Updated", u.fullName, `Role: ${u.role}`);
+        saveState();
+        closeModal();
+        render();
+        toast("Saved", "User updated");
+      }
+
+      function saveStore(id) {
+        const s = state.stores.find((x) => x.id === id);
+        if (!s) return;
+        s.name = document.getElementById("es_name").value.trim() || s.name;
+        s.area = document.getElementById("es_area").value.trim() || s.area;
+        s.whatsapp = document.getElementById("es_whatsapp").value.trim() || s.whatsapp;
+        s.instagram = document.getElementById("es_instagram").value.trim() || s.instagram;
+        s.address = document.getElementById("es_address").value.trim() || s.address;
+        addActivity("Store Updated", s.name, s.area);
+        saveState();
+        closeModal();
+        render();
+        toast("Saved", "Store updated");
+      }
+
+      function saveBarber(id) {
+        const b = state.barbers.find((x) => x.id === id);
+        if (!b) return;
+        b.name = document.getElementById("eb_name").value.trim() || b.name;
+        b.area = document.getElementById("eb_area").value.trim() || b.area;
+        const ind = Boolean(document.getElementById("eb_ind").checked);
+        b.independent = ind;
+        const shopId = document.getElementById("eb_shop").value || null;
+        b.shopId = ind ? null : shopId;
+        addActivity("Barber Updated", b.name, b.area);
+        saveState();
+        closeModal();
+        render();
+        toast("Saved", "Barber updated");
+      }
+
+      function randomLiveEvent() {
+        const types = ["Store Registered", "New Barber Added", "New Reel Uploaded", "New Booking", "Verification Request"];
+        const type = types[Math.floor(Math.random() * types.length)];
+        if (type === "New Reel Uploaded") {
+          state.reels.unshift({
+            id: uid("r"),
+            caption: `Live reel • #fade • ${Math.random().toString(16).slice(2, 6)}`,
+            authorType: "barber",
+            authorId: state.barbers[0]?.id || null,
+            mediaType: "video",
+            mediaUrl: "",
+            status: state.settings.require_post_approval ? "pending" : "approved",
+            featured: false,
+            sponsored: false,
+            likes: 0,
+            comments: 0,
+            saves: 0,
+            createdAt: nowIso()
+          });
+          notify("reel", "New reel", "A new reel arrived in the moderation queue.", {});
+          addActivity("New Reel Uploaded", "Live reel", "Auto event");
+        } else if (type === "Verification Request") {
+          state.roleRequests.unshift({
+            id: uid("rr"),
+            profileId: state.users[Math.floor(Math.random() * state.users.length)].id,
+            requestedRole: Math.random() > 0.5 ? "barber" : "shop_owner",
+            shopName: null,
+            phone: "+973",
+            notes: "Live request",
+            status: "pending",
+            createdAt: nowIso()
+          });
+          notify("verification", "New role request", "A new verification request is pending.", {});
+          addActivity("Verification Request", "New request", "Pending admin approval");
+        } else if (type === "Store Registered") {
+          addActivity("Store Registered", "Live store", "Premium listing candidate");
+          notify("store", "New store request", "A store was registered.", {});
+        } else if (type === "New Barber Added") {
+          addActivity("New Barber Added", "Live barber", "Onboarding");
+          notify("barber", "New barber", "A barber was added.", {});
+        } else {
+          addActivity("New Booking", "Booking confirmed", "Fade + Beard • 12.5 BHD");
+          notify("booking", "New booking", "A new booking was created.", {});
+        }
+        saveState();
+        if (currentPage === "dashboard" || currentPage === "reels" || currentPage === "verification") render();
+        renderBell();
+      }
+
+      function toggleLive() {
+        const btn = document.getElementById("liveToggle");
+        const active = Boolean(liveTimer);
+        if (active) {
+          clearInterval(liveTimer);
+          liveTimer = null;
+          btn.classList.remove("primary");
+          toast("Live disabled", "Auto events stopped.");
+          return;
+        }
+        liveTimer = setInterval(randomLiveEvent, 6500);
+        btn.classList.add("primary");
+        toast("Live enabled", "Auto events running.");
+      }
+
+      function initEvents() {
+        document.querySelector(".nav").addEventListener("click", (e) => {
+          const a = e.target.closest("a[data-page]");
+          if (!a) return;
+          e.preventDefault();
+          setPage(a.getAttribute("data-page"));
+        });
+
+        document.getElementById("appContent").addEventListener("click", (e) => {
+          const el = e.target.closest("[data-action]");
+          if (!el) return;
+          const action = el.getAttribute("data-action");
+          const id = el.getAttribute("data-id");
+          const entity = el.getAttribute("data-entity");
+          const key = el.getAttribute("data-key");
+          const status = el.getAttribute("data-status");
+          handleAction(action, id, entity || key || status);
+        });
+
+        document.getElementById("appContent").addEventListener("change", (e) => {
+          const el = e.target.closest("[data-action='toggleSetting']");
+          if (!el) return;
+          const key = el.getAttribute("data-key");
+          handleAction("toggleSetting", null, key);
+        });
+
+        document.getElementById("globalSearch").addEventListener("input", () => render());
+
+        document.getElementById("createBtn").addEventListener("click", () => {
+          if (currentPage === "dashboard") createEntityModal("reels");
+          else if (currentPage === "users") createEntityModal("users");
+          else if (currentPage === "stores") createEntityModal("stores");
+          else if (currentPage === "barbers") createEntityModal("barbers");
+          else if (currentPage === "reels") createEntityModal("reels");
+          else createEntityModal(currentPage);
+        });
+
+        document.getElementById("overlay").addEventListener("click", (e) => {
+          if (e.target.id === "overlay") closeModal();
+        });
+
+        document.getElementById("liveToggle").addEventListener("click", toggleLive);
+
+        document.getElementById("bellBtn").addEventListener("click", () => {
+          const menu = document.getElementById("bellMenu");
+          menu.style.display = menu.style.display === "block" ? "none" : "block";
+          renderBell();
+        });
+
+        document.addEventListener("click", (e) => {
+          const menu = document.getElementById("bellMenu");
+          const btn = document.getElementById("bellBtn");
+          if (!menu || !btn) return;
+          if (e.target === btn || btn.contains(e.target) || menu.contains(e.target)) return;
+          menu.style.display = "none";
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            closeModal();
+            document.getElementById("bellMenu").style.display = "none";
+          }
+          if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            document.getElementById("globalSearch").focus();
+          }
+        });
+      }
+
+      window.closeModal = closeModal;
+      window.createUser = createUser;
+      window.createStore = createStore;
+      window.createBarber = createBarber;
+      window.createReel = createReel;
+      window.saveUser = saveUser;
+      window.saveStore = saveStore;
+      window.saveBarber = saveBarber;
+
+      showScreen("panel");
+      ensureState();
+      initEvents();
+      renderBell();
+      setPage("dashboard");
+    </script>
+  </body>
+</html>

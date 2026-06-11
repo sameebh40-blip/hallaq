@@ -1,0 +1,1 @@
+﻿INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Users\\k\\Desktop\\hallaq\\lib\\main.dart|69|9|7|'anonKey' is deprecated and shouldn't be used. Use publishableKey instead. anonKey will be removed in a future major version.

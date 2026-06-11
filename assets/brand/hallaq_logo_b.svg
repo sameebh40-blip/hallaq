@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE08A"/>
+      <stop offset="0.55" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#8E6B1F"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#D4AF37" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#0A0A0A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <circle cx="256" cy="256" r="236" fill="#0A0A0A"/>
+  <circle cx="256" cy="256" r="236" fill="url(#glow)"/>
+
+  <g filter="url(#shadow)">
+    <circle cx="256" cy="256" r="182" fill="#0F0F0F" stroke="#2A2A2A" stroke-width="4"/>
+    <circle cx="256" cy="256" r="150" fill="#0B0B0B" stroke="#1F1F1F" stroke-width="2"/>
+
+    <g fill="none" stroke="url(#gold)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="206" cy="330" r="22"/>
+      <circle cx="306" cy="330" r="22"/>
+      <path d="M222 318 L300 212"/>
+      <path d="M290 318 L212 212"/>
+      <path d="M250 244 L238 216"/>
+      <path d="M262 244 L274 216"/>
+    </g>
+
+    <text x="256" y="295" text-anchor="middle" font-size="210" font-weight="900" font-family="sans-serif" fill="url(#gold)">H</text>
+  </g>
+</svg>

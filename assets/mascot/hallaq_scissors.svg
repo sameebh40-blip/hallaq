@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE08A"/>
+      <stop offset="0.55" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#8E6B1F"/>
+    </linearGradient>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <path d="M84 108c-18 0-32 14-32 32s14 32 32 32c13 0 24-7 29-18l15 15c-6 15-21 27-44 27-30 0-54-24-54-56s24-56 54-56c23 0 38 12 44 27l-15 15c-5-11-16-18-29-18z" fill="url(#g)"/>
+  <path d="M172 108c-13 0-24 7-29 18l-15-15c6-15 21-27 44-27 30 0 54 24 54 56s-24 56-54 56c-23 0-38-12-44-27l15-15c5 11 16 18 29 18 18 0 32-14 32-32s-14-32-32-32z" fill="url(#g)"/>
+  <path d="M94 182l30-30 22 22-30 30c-6 6-16 6-22 0s-6-16 0-22z" fill="url(#g)"/>
+  <path d="M162 182l-30-30-22 22 30 30c6 6 16 6 22 0s6-16 0-22z" fill="url(#g)"/>
+  <path d="M118 146l-4-4c-4-4-4-10 0-14l56-56c5-5 14-5 19 0s5 14 0 19l-56 56c-4 4-10 4-14 0z" fill="url(#g)"/>
+  <path d="M138 146l4-4c4-4 4-10 0-14L86 72c-5-5-14-5-19 0s-5 14 0 19l56 56c4 4 10 4 14 0z" fill="url(#g)"/>
+  <path d="M72 122c10-12 26-20 44-20 11 0 22 3 31 8l-9 9c-7-3-14-5-22-5-16 0-30 7-39 18z" fill="url(#s)"/>
+  <path d="M184 122c-10-12-26-20-44-20-11 0-22 3-31 8l9 9c7-3 14-5 22-5 16 0 30 7 39 18z" fill="url(#s)"/>
+</svg>

@@ -1,0 +1,5 @@
+{
+  "installCommand": "if [ -f ../../package.json ]; then cd ../..; fi; npm ci",
+  "buildCommand": "if [ -f ../../package.json ]; then cd ../..; fi; npm run build -w apps/shop",
+  "outputDirectory": "apps/shop/.next"
+}

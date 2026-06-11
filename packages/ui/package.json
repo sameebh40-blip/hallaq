@@ -1,0 +1,33 @@
+{
+  "name": "@hallaq/ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./styles.css": "./styles.css",
+    "./tailwind.preset": "./tailwind.preset.ts",
+    "./providers": "./src/providers.tsx",
+    "./translations": "./src/translations.ts",
+    "./translations-client": "./src/translations-client.tsx",
+    "./translations-server": "./src/translations-server.ts",
+    "./cn": "./src/cn.ts",
+    "./button": "./src/button.tsx",
+    "./input": "./src/input.tsx",
+    "./label": "./src/label.tsx",
+    "./hallaq-logo": "./src/hallaq-logo.tsx",
+    "./luxury-card": "./src/luxury-card.tsx"
+  },
+  "dependencies": {
+    "@hallaq/brand-assets": "*",
+    "@radix-ui/react-slot": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.460.0",
+    "tailwind-merge": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.6.0"
+  }
+}

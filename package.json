@@ -1,0 +1,28 @@
+{
+  "name": "hallaq-platform",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:landing": "npm run dev -w apps/landing",
+    "dev:customer": "npm run dev -w apps/customer",
+    "dev:shop": "npm run dev -w apps/shop",
+    "dev:admin": "npm run dev -w apps/admin --",
+    "build:landing": "npm run build -w apps/landing",
+    "build:customer": "npm run build -w apps/customer",
+    "build:shop": "npm run build -w apps/shop",
+    "build:admin": "npm run build -w apps/admin",
+    "lint:landing": "npm run lint -w apps/landing",
+    "lint:customer": "npm run lint -w apps/customer",
+    "lint:shop": "npm run lint -w apps/shop",
+    "lint:admin": "npm run lint -w apps/admin",
+    "lint:migrations": "node scripts/lint-migrations.js",
+    "test:admin": "node --experimental-strip-types --test apps/admin/src/lib/profile-role-sync.test.ts apps/admin/src/lib/media/prepare-image-upload.test.ts"
+  },
+  "devDependencies": {
+    "supabase": "^2.104.0"
+  }
+}

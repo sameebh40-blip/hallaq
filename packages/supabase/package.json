@@ -1,0 +1,28 @@
+{
+  "name": "@hallaq/supabase",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./env": "./src/env.ts",
+    "./routing": "./src/routing.ts",
+    "./browser": "./src/browser.ts",
+    "./server": "./src/server.ts",
+    "./middleware": "./src/middleware.ts",
+    "./health": "./src/health.ts",
+    "./user-facing": "./src/user-facing.ts",
+    "./profile": "./src/profile.ts",
+    "./memberships": "./src/memberships.ts",
+    "./admin": "./src/admin.ts",
+    "./storage": "./src/storage.ts",
+    "./logs": "./src/logs.ts"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.0",
+    "@supabase/supabase-js": "^2.49.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}

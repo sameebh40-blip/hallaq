@@ -1,0 +1,8 @@
+﻿flutter : 37 issues found. (ran in 73.5s)
+At line:1 char:1
++ flutter analyze 2>&1 | Out-File -FilePath qa_flutter_analyze_latest.t ...
++ ~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (37 issues found. (ran in 73.5s):S 
+   tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

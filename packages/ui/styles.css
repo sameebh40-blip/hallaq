@@ -1,0 +1,48 @@
+:root {
+  --background: 0 0% 4%;
+  --foreground: 0 0% 100%;
+
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 100%;
+
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 100%;
+
+  --primary: 46 65% 53%;
+  --primary-foreground: 0 0% 5%;
+
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 63%;
+
+  --accent: 46 65% 53%;
+  --accent-foreground: 0 0% 5%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+  --ring: 46 65% 53%;
+
+  --radius: 16px;
+
+  --gold: 46 65% 53%;
+  --glass: 0 0% 100% / 0.06;
+  --glass-border: 0 0% 100% / 0.10;
+  --shadow-soft: 0 0% 0% / 0.35;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background: radial-gradient(1000px 600px at 20% 10%, hsl(var(--gold) / 0.12), transparent 60%),
+    radial-gradient(900px 500px at 80% 0%, hsl(var(--gold) / 0.08), transparent 55%),
+    hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+

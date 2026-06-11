@@ -1,0 +1,69 @@
+{
+  "id": "/",
+  "name": "Hallaq | حلّاق",
+  "short_name": "Hallaq",
+  "description": "حلّاق (Hallaq) - social barber discovery and booking platform for Bahrain.",
+  "lang": "ar-BH",
+  "dir": "rtl",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait-primary",
+  "background_color": "#121212",
+  "theme_color": "#0A0A0A",
+  "categories": ["lifestyle", "social", "business"],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Search",
+      "short_name": "Search",
+      "url": "/search?source=pwa",
+      "icons": [
+        {
+          "src": "icons/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Book Now",
+      "short_name": "Book",
+      "url": "/booking/new?source=pwa",
+      "icons": [
+        {
+          "src": "icons/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Awards",
+      "short_name": "Awards",
+      "url": "/awards?source=pwa",
+      "icons": [
+        {
+          "src": "icons/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
