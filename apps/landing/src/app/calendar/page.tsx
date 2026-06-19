@@ -38,6 +38,23 @@ export default function CalendarPage() {
       duration: 30,
       service: 'Haircut',
       barber: 'Ahmed'
+    },
+    {
+      id: '1b',
+      clientName: 'Sara Abdullah',
+      duration: 30,
+      service: 'Styling',
+      barber: 'barber2'
+    }
+  ];
+
+  timeSlots[1].bookings = [
+    {
+      id: '1c',
+      clientName: 'Layla Khalil',
+      duration: 45,
+      service: 'Hair Treatment',
+      barber: 'Mohammed'
     }
   ];
 
@@ -48,6 +65,33 @@ export default function CalendarPage() {
       duration: 45,
       service: 'Haircut + Beard',
       barber: 'Mohammed'
+    },
+    {
+      id: '2b',
+      clientName: 'Hassan Rashid',
+      duration: 30,
+      service: 'Haircut',
+      barber: 'Ahmed'
+    }
+  ];
+
+  timeSlots[3].bookings = [
+    {
+      id: '2c',
+      clientName: 'Khalid bin Ali',
+      duration: 60,
+      service: 'Full Grooming',
+      barber: 'Hassan'
+    }
+  ];
+
+  timeSlots[4].bookings = [
+    {
+      id: '2d',
+      clientName: 'Nora Hassan',
+      duration: 30,
+      service: 'Haircut',
+      barber: 'Ahmed'
     }
   ];
 
@@ -57,6 +101,60 @@ export default function CalendarPage() {
       clientName: 'Omar Hassan',
       duration: 30,
       service: 'Haircut',
+      barber: 'Hassan'
+    },
+    {
+      id: '3b',
+      clientName: 'Amira Ibrahim',
+      duration: 45,
+      service: 'Color + Cut',
+      barber: 'Mohammed'
+    }
+  ];
+
+  timeSlots[6].bookings = [
+    {
+      id: '3c',
+      clientName: 'Zain Abdullah',
+      duration: 30,
+      service: 'Beard Trim',
+      barber: 'Ahmed'
+    }
+  ];
+
+  timeSlots[7].bookings = [
+    {
+      id: '3d',
+      clientName: 'Hana Rashid',
+      duration: 60,
+      service: 'Hair Extension',
+      barber: 'Hassan'
+    },
+    {
+      id: '3e',
+      clientName: 'Samir Hassan',
+      duration: 30,
+      service: 'Haircut',
+      barber: 'Mohammed'
+    }
+  ];
+
+  timeSlots[8].bookings = [
+    {
+      id: '3f',
+      clientName: 'Mira Abdullah',
+      duration: 30,
+      service: 'Styling',
+      barber: 'Ahmed'
+    }
+  ];
+
+  timeSlots[9].bookings = [
+    {
+      id: '3g',
+      clientName: 'Rashid Ali',
+      duration: 45,
+      service: 'Haircut + Beard',
       barber: 'Hassan'
     }
   ];
@@ -224,15 +322,17 @@ export default function CalendarPage() {
             <div className="mt-6 grid grid-cols-3 gap-4">
               <div className="rounded-lg bg-white p-4 shadow">
                 <p className="text-sm text-gray-600">Total Bookings</p>
-                <p className="text-2xl font-bold text-gray-900">3</p>
+                <p className="text-2xl font-bold text-gray-900">{timeSlots.reduce((sum, slot) => sum + slot.bookings.length, 0)}</p>
               </div>
               <div className="rounded-lg bg-white p-4 shadow">
                 <p className="text-sm text-gray-600">Available Slots</p>
-                <p className="text-2xl font-bold text-green-600">7</p>
+                <p className="text-2xl font-bold text-green-600">{timeSlots.filter(slot => slot.bookings.length === 0).length}</p>
               </div>
               <div className="rounded-lg bg-white p-4 shadow">
                 <p className="text-sm text-gray-600">Occupancy</p>
-                <p className="text-2xl font-bold text-blue-600">30%</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {Math.round((timeSlots.reduce((sum, slot) => sum + slot.bookings.length, 0) / timeSlots.length) * 100)}%
+                </p>
               </div>
             </div>
           </div>
