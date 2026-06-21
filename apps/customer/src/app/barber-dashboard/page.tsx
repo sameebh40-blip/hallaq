@@ -24,6 +24,7 @@ type BarberRow = {
   avatar_path: string | null;
   cover_url: string | null;
   cover_path: string | null;
+  shop_id: string | null;
 };
 
 function formatDateTime(value: string) {
@@ -55,7 +56,7 @@ export default async function BarberDashboardWebPage({
 
   const { data: barber } = (await supabase
     .from("barbers")
-    .select("id, profile_id, display_name, bio, area, avatar_url, avatar_path, cover_url, cover_path")
+    .select("id, profile_id, display_name, bio, area, avatar_url, avatar_path, cover_url, cover_path, shop_id")
     .eq("profile_id", user.id)
     .maybeSingle()) as unknown as { data: BarberRow | null };
 
@@ -318,7 +319,7 @@ export default async function BarberDashboardWebPage({
       ) : null}
 
       {tab === "bookings" ? (
-        <BookingsPanel barberId={barber.id} updateBookingStatus={updateBookingStatus} />
+        <BookingsPanel barberId={barber.id} shopId={barber.shop_id} updateBookingStatus={updateBookingStatus} />
       ) : null}
 
       {tab === "portfolio" ? (
@@ -445,16 +446,26 @@ async function ReviewsPanel({
 
 async function BookingsPanel({
   barberId,
+  shopId,
   updateBookingStatus
 }: {
   barberId: string;
+  shopId: string | null;
   updateBookingStatus: (formData: FormData) => Promise<void>;
 }) {
   const supabase = await createAppSupabaseServerClient();
-  const { data: rows } = await supabase
+  // Show bookings assigned to this barber OR "any staff" bookings (barber_id=null) for the same shop
+  let query = supabase
     .from("bookings")
-    .select("id, start_at, end_at, status, customer_profile_id, profiles(full_name), services(name_en, name_ar)")
-    .eq("barber_id", barberId)
+    .select("id, start_at, end_at, status, customer_profile_id, profiles(full_name), services(name_en, name_ar)");
+
+  if (shopId) {
+    query = query.eq("shop_id", shopId).or(`barber_id.eq.${barberId},barber_id.is.null`);
+  } else {
+    query = query.eq("barber_id", barberId);
+  }
+
+  const { data: rows } = await query
     .order("start_at", { ascending: false })
     .limit(60);
 
