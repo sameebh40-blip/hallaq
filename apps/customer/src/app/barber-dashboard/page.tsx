@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import Link from "next/link";
 import { randomUUID } from "crypto";
 
@@ -8,9 +8,11 @@ import { Button } from "@hallaq/ui/button";
 import { Input } from "@hallaq/ui/input";
 import { Label } from "@hallaq/ui/label";
 import { LuxuryCard } from "@hallaq/ui/luxury-card";
+import { ExternalLink, QrCode, ScanLine } from "lucide-react";
 
 import { RealtimeRefresh } from "@/components/realtime-refresh";
 import { SafeImage } from "@/components/safe-image";
+import { BarberCalendar } from "./barber-calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,7 @@ type BarberRow = {
   avatar_path: string | null;
   cover_url: string | null;
   cover_path: string | null;
+  shop_id: string | null;
 };
 
 function formatDateTime(value: string) {
@@ -33,7 +36,7 @@ function formatDateTime(value: string) {
 
 function safeTab(raw: string | null | undefined) {
   const v = String(raw ?? "").trim();
-  if (v === "bookings" || v === "portfolio" || v === "reviews" || v === "profile") return v;
+  if (v === "bookings" || v === "calendar" || v === "portfolio" || v === "reviews" || v === "profile") return v;
   return "bookings";
 }
 
@@ -55,7 +58,7 @@ export default async function BarberDashboardWebPage({
 
   const { data: barber } = (await supabase
     .from("barbers")
-    .select("id, profile_id, display_name, bio, area, avatar_url, avatar_path, cover_url, cover_path")
+    .select("id, profile_id, display_name, bio, area, avatar_url, avatar_path, cover_url, cover_path, shop_id")
     .eq("profile_id", user.id)
     .maybeSingle()) as unknown as { data: BarberRow | null };
 
@@ -80,8 +83,33 @@ export default async function BarberDashboardWebPage({
     );
   }
 
+  const landingOrigin = (process.env.NEXT_PUBLIC_LANDING_URL ?? "https://hallaq.app").trim().replace(/\/+$/, "");
+  const publicProfileHref = `${landingOrigin}/b/${encodeURIComponent(barber.id)}?source=qr`;
+  const publicPreviewHref = `${publicProfileHref}&preview=1`;
+  const publicHealthIssues = [
+    (barber.display_name ?? "").trim() ? null : "name",
+    (barber.bio ?? "").trim() ? null : "bio",
+    (barber.area ?? "").trim() ? null : "area",
+    barber.avatar_url ? null : "avatar",
+    barber.cover_url ? null : "cover",
+  ].filter((item): item is string => Boolean(item));
+
   const avatarUrl = (await signedOrUrl(supabase, "barber-images", barber.avatar_path ?? barber.avatar_url)) ?? null;
   const coverUrl = (await signedOrUrl(supabase, "barber-images", barber.cover_path ?? barber.cover_url)) ?? null;
+
+  const { count: portfolioCount } = await supabase
+    .from("portfolio_items")
+    .select("id", { count: "exact", head: true })
+    .eq("owner_type", "barber")
+    .eq("owner_id", barber.id)
+    .eq("status", "approved");
+
+  const missing: { key: string; label: string; tab: "profile" | "portfolio" }[] = [];
+  if (!coverUrl) missing.push({ key: "cover", label: "Add a cover image", tab: "profile" });
+  if (!avatarUrl) missing.push({ key: "avatar", label: "Add a profile photo", tab: "profile" });
+  if (!String(barber.bio ?? "").trim()) missing.push({ key: "bio", label: "Add a short bio", tab: "profile" });
+  if ((portfolioCount ?? 0) < 6) missing.push({ key: "portfolio", label: `Add portfolio photos (${portfolioCount ?? 0}/6)`, tab: "portfolio" });
+  const isComplete = missing.length === 0;
 
   async function updateBookingStatus(formData: FormData) {
     "use server";
@@ -279,35 +307,95 @@ export default async function BarberDashboardWebPage({
           <div className="flex flex-1 flex-col">
             <div className="text-sm font-semibold text-[#111111]">{barber.display_name ?? "Barber"}</div>
             <div className="pt-1 text-xs text-muted-foreground">Manage bookings, photos, and profile details.</div>
+            <div className="pt-2 text-xs text-muted-foreground">
+              {publicHealthIssues.length ? `Public profile needs: ${publicHealthIssues.join(", ")}` : "Public profile healthy"}
+            </div>
           </div>
-          <Button asChild size="sm" variant="secondary" className="rounded-2xl">
-            <Link href={`/barber/${encodeURIComponent(barber.id)}`}>View profile</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            {isComplete ? (
+              <Button asChild size="sm" variant="secondary" className="rounded-2xl">
+                <a href={publicProfileHref} target="_blank" rel="noreferrer">
+                  <QrCode className="h-4 w-4" />
+                  QR page
+                </a>
+              </Button>
+            ) : (
+              <Button size="sm" variant="secondary" className="rounded-2xl" disabled>
+                Complete profile
+              </Button>
+            )}
+            <Button asChild size="sm" variant="outline" className="rounded-2xl">
+              <a href={publicPreviewHref} target="_blank" rel="noreferrer">
+                <ExternalLink className="h-4 w-4" />
+                Open preview
+              </a>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="rounded-2xl">
+              <Link href="/scan">
+                <ScanLine className="h-4 w-4" />
+                Open scanner
+              </Link>
+            </Button>
+          </div>
         </div>
       </LuxuryCard>
 
-      <div className="grid grid-cols-4 items-center justify-between gap-2 rounded-2xl bg-secondary/60 p-1">
+      {!isComplete ? (
+        <LuxuryCard className="bg-white p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold text-[#111111]">Finish your profile</div>
+              <div className="pt-1 text-sm text-muted-foreground">
+                Your QR page looks premium when these are complete.
+              </div>
+            </div>
+            <Button asChild size="sm" variant="outline" className="rounded-2xl">
+              <Link href={tabHref("profile")}>Fix now</Link>
+            </Button>
+          </div>
+          <div className="mt-4 grid gap-2">
+            {missing.map((m) => (
+              <Link
+                key={m.key}
+                href={tabHref(m.tab)}
+                className="flex items-center justify-between gap-3 rounded-2xl border bg-secondary/60 px-4 py-3 text-sm font-semibold text-[#111111]"
+              >
+                <span>{m.label}</span>
+                <span className="text-xs text-muted-foreground">Open</span>
+              </Link>
+            ))}
+          </div>
+        </LuxuryCard>
+      ) : null}
+
+      <div className="grid grid-cols-5 items-center justify-between gap-1 rounded-2xl bg-secondary/60 p-1">
         <Link
           href={tabHref("bookings")}
-          className={`flex-1 rounded-2xl px-3 py-2 text-center text-xs font-semibold ${tab === "bookings" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
+          className={`flex-1 rounded-2xl px-2 py-2 text-center text-xs font-semibold ${tab === "bookings" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
         >
           Bookings
         </Link>
         <Link
+          href={tabHref("calendar")}
+          className={`flex-1 rounded-2xl px-2 py-2 text-center text-xs font-semibold ${tab === "calendar" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
+        >
+          Calendar
+        </Link>
+        <Link
           href={tabHref("portfolio")}
-          className={`flex-1 rounded-2xl px-3 py-2 text-center text-xs font-semibold ${tab === "portfolio" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
+          className={`flex-1 rounded-2xl px-2 py-2 text-center text-xs font-semibold ${tab === "portfolio" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
         >
           Portfolio
         </Link>
         <Link
           href={tabHref("reviews")}
-          className={`flex-1 rounded-2xl px-3 py-2 text-center text-xs font-semibold ${tab === "reviews" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
+          className={`flex-1 rounded-2xl px-2 py-2 text-center text-xs font-semibold ${tab === "reviews" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
         >
           Reviews
         </Link>
         <Link
           href={tabHref("profile")}
-          className={`flex-1 rounded-2xl px-3 py-2 text-center text-xs font-semibold ${tab === "profile" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
+          className={`flex-1 rounded-2xl px-2 py-2 text-center text-xs font-semibold ${tab === "profile" ? "bg-white text-[#111111] shadow-soft" : "text-muted-foreground"}`}
         >
           Profile
         </Link>
@@ -318,7 +406,11 @@ export default async function BarberDashboardWebPage({
       ) : null}
 
       {tab === "bookings" ? (
-        <BookingsPanel barberId={barber.id} updateBookingStatus={updateBookingStatus} />
+        <BookingsPanel barberId={barber.id} shopId={barber.shop_id} updateBookingStatus={updateBookingStatus} />
+      ) : null}
+
+      {tab === "calendar" ? (
+        <BarberCalendar barberId={barber.id} shopId={barber.shop_id} />
       ) : null}
 
       {tab === "portfolio" ? (
@@ -330,8 +422,24 @@ export default async function BarberDashboardWebPage({
       ) : null}
 
       {tab === "profile" ? (
-        <LuxuryCard className="bg-white p-5">
-          <form action={saveProfile} className="grid gap-4" encType="multipart/form-data">
+        <div className="grid gap-4">
+          <LuxuryCard className="bg-white p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold text-[#111111]">Public web profile</div>
+                <div className="pt-1 text-sm text-muted-foreground">This opens the live barber page with connected reviews, photos, availability, and location.</div>
+              </div>
+              <Button asChild size="sm" variant="secondary" className="rounded-2xl">
+                <a href={publicProfileHref} target="_blank" rel="noreferrer">
+                  <QrCode className="h-4 w-4" />
+                  QR page
+                </a>
+              </Button>
+            </div>
+          </LuxuryCard>
+
+          <LuxuryCard className="bg-white p-5">
+            <form action={saveProfile} className="grid gap-4" encType="multipart/form-data">
             <div className="grid gap-2">
               <Label>Cover</Label>
               <div className="aspect-[16/9] overflow-hidden rounded-2xl bg-secondary">
@@ -361,8 +469,9 @@ export default async function BarberDashboardWebPage({
             <Button type="submit" className="w-full rounded-2xl">
               Save
             </Button>
-          </form>
-        </LuxuryCard>
+            </form>
+          </LuxuryCard>
+        </div>
       ) : null}
 
       <form action="/auth/sign-out" method="post" className="pt-2">
@@ -384,7 +493,7 @@ async function ReviewsPanel({
   const supabase = await createAppSupabaseServerClient();
   const { data: rows } = await supabase
     .from("reviews")
-    .select("id, rating, comment, text, reply_text, replied_at, created_at, is_verified, profiles(full_name)")
+    .select("id, rating, comment, text, reply_text, replied_at, created_at, is_verified, customer_profile:profiles!reviews_customer_profile_id_fkey(full_name)")
     .eq("target_type", "barber")
     .eq("target_id", barberId)
     .eq("status", "approved")
@@ -393,7 +502,7 @@ async function ReviewsPanel({
 
   const list = (Array.isArray(rows) ? rows : []).map((row) => {
     const r = row as Record<string, unknown>;
-    const rawProfile = r.profiles as unknown;
+    const rawProfile = r.customer_profile as unknown;
     const profile =
       (Array.isArray(rawProfile) ? (rawProfile[0] as Record<string, unknown> | undefined) : (rawProfile as Record<string, unknown> | null)) ??
       null;
@@ -445,16 +554,26 @@ async function ReviewsPanel({
 
 async function BookingsPanel({
   barberId,
+  shopId,
   updateBookingStatus
 }: {
   barberId: string;
+  shopId: string | null;
   updateBookingStatus: (formData: FormData) => Promise<void>;
 }) {
   const supabase = await createAppSupabaseServerClient();
-  const { data: rows } = await supabase
+  // Show bookings assigned to this barber OR "any staff" bookings (barber_id=null) for the same shop
+  let query = supabase
     .from("bookings")
-    .select("id, start_at, end_at, status, customer_profile_id, profiles(full_name), services(name_en, name_ar)")
-    .eq("barber_id", barberId)
+    .select("id, start_at, end_at, status, customer_profile_id, profiles(full_name), services(name_en, name_ar)");
+
+  if (shopId) {
+    query = query.eq("shop_id", shopId).or(`barber_id.eq.${barberId},barber_id.is.null`);
+  } else {
+    query = query.eq("barber_id", barberId);
+  }
+
+  const { data: rows } = await query
     .order("start_at", { ascending: false })
     .limit(60);
 
@@ -613,3 +732,4 @@ async function PortfolioPanel({
     </div>
   );
 }
+
